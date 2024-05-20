@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy_to_lambda:
-    name: 👑 Deploy FastAPI endpoints to Lambda Function
+    name: 🌋 Deploy FastAPI endpoints to Lambda Function
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -16,11 +16,11 @@ jobs:
       contents: read # This is required for actions/checkout
 
     steps:
-      - name: 🐡 Checkout
+      - name: 🌚 Checkout
         uses: actions/checkout@v3
 
       # Fetch credentials from AWS
-      - name: 🫕 Configure aws credential
+      - name: 🍄 Configure aws credential
         uses: aws-actions/configure-aws-credentials@master
         with:
           aws-region: ${{ secrets.AWS_REGION }}
@@ -29,10 +29,10 @@ jobs:
           role-session-name: GitHubActions
 
       # Get Account, UserID and Arn of AWS
-      - name: 🐓 Allow to run on role.
+      - name: 🪼 Allow to run on role.
         run: aws sts get-caller-identity
 
-      - name: 🪽 Setup python
+      - name: 🍌 Setup python
         uses: actions/setup-python@v3
         with:
           # Specify python version (I think it must be the same version as I set in Lambda function)
