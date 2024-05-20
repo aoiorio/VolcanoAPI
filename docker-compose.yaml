@@ -6,4 +6,5 @@ services:
       - .dockervenv:/src/.venv
       - .:/src
     ports:
-      - 5000:5000 # Connect the port 8000 of host machine to port 8000 that in Docker
+      # You must specify this port!! and if you run this app on other ports like 5000, you have to write --port 5000 to your uvicorn command
+      - 5000:5000

@@ -12,6 +12,8 @@ RUN pip install poetry
 COPY pyproject.toml* poetry.lock* ./
 
 # ⌛️ install libraries using poetry
+# ANCHOR -  not creating virtual environment, if you delete this command, you'll get an error that says not found uvicorn
+RUN poetry config virtualenvs.create false
 RUN poetry config virtualenvs.in-project true
 RUN if [ -f pyproject.toml ]; then poetry install --no-root; fi
 
