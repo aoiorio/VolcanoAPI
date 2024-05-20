@@ -1,0 +1,9 @@
+version: '3'
+services:
+  volcano-fastapi:
+    build: .
+    volumes:
+      - .dockervenv:/src/.venv
+      - .:/src
+    ports:
+      - 5000:5000 # Connect the port 8000 of host machine to port 8000 that in Docker
