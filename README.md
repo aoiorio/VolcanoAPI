@@ -4,7 +4,7 @@
 ## 🐥 How do I start?
 <br>
 
-- ⏰ **Execute these commands**
+- 🦋 **Execute these commands**
 ```shell
 # Create image of volcano-api
 $ docker-compose build
@@ -23,11 +23,6 @@ $ docker-compose run --entrypoint "poetry install --no-root" volcano-api
 # Install all dependencies to Docker environment
 $ docker-compose build --no-cache
 ```
-
-<br>
-
-## 🦕 References
-- [How to create Docker environment for FastAPI](https://zenn.dev/sh0nk/books/537bb028709ab9/viewer/5d287c)
 
 <br>
 
@@ -55,3 +50,20 @@ $ docker-compose build --no-cache
     └── 📁schemas
         └── __init__.py
 ```
+
+<br>
+
+## 🦕 References
+
+- Docker 👽
+    - [How to create Docker environment for FastAPI](https://zenn.dev/sh0nk/books/537bb028709ab9/viewer/5d287c)
+
+<br>
+
+- FastAPI 👨🏼‍🔬
+    - [Folder structure for FastAPI](https://zenn.dev/tk_resilie/books/bd5708c54a8a0a/viewer/01-endpoints)
+
+<br>
+
+- GitHub Actions
+    - [How to create GitHub Actions to deploy zip file to AWS Lambda](https://dev.classmethod.jp/articles/lambda-github-actions/)

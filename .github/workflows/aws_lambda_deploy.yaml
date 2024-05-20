@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-python@v3
         with:
           # Specify python version (I think it must be the same version as I set in Lambda function)
-          python-version: '3.12'
+          python-version: '3.9'
 
       # Create zip file and upload to Lambda function called sealion
       - name: 🧠 Upload zip file to Lambda function
