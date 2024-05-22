@@ -35,20 +35,27 @@ $ docker-compose build --no-cache
         └── main.cpython-39.pyc
     └── 📁api
         └── __init__.py
-        └── 📁api_v1
+        └── 📁v1
             └── __init__.py
-            └── api_v1_routers.py
             └── 📁endpoints
                 └── __init__.py
+            └── routes.py
     └── 📁core
         └── __init__.py
-    └── 📁exceptions
-        └── __init__.py
+        └── config.py
+        └── database.py
     └── main.py
-    └── 📁models
+    └── 📁model
         └── __init__.py
-    └── 📁schemas
+    └── 📁repository
         └── __init__.py
+        └── base_repository.py
+    └── 📁schema
+        └── __init__.py
+        └── base_schema.py
+    └── 📁service
+        └── __init__.py
+        └── base_service.py
 ```
 
 <br>
@@ -65,5 +72,10 @@ $ docker-compose build --no-cache
 
 <br>
 
-- GitHub Actions
+- GitHub Actions 🐩
     - [How to create GitHub Actions to deploy zip file to AWS Lambda](https://dev.classmethod.jp/articles/lambda-github-actions/)
+
+<br>
+
+- AWS API Gateway and AWS Lambda
+    - [How to connect Lambda function to API Gateway](https://www.deadbear.io/simple-serverless-fastapi-with-aws-lambda/#serverless-fastapi-with-aws-lambda)
