@@ -10,6 +10,8 @@ python = "^3.9"
 fastapi = "0.99.0"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
 mangum = "0.11.0"
+python-dotenv = "^1.0.1"
+sqlalchemy = "2.0.29"
 
 
 [build-system]
