@@ -19,6 +19,11 @@ jobs:
       - name: 🌚 Checkout
         uses: actions/checkout@v3
 
+      - run: 'echo "$DATABASE_URL" > key'
+        shell: bash
+        env:
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+
       # Fetch credentials from AWS
       - name: 🍄 Configure aws credential
         uses: aws-actions/configure-aws-credentials@master
