@@ -19,11 +19,6 @@ jobs:
       - name: 🌚 Checkout
         uses: actions/checkout@v3
 
-      # - name: Make envfile
-      #   uses: SpicyPizza/create-envfile@v2.0
-      #   with:
-      #     file_name: .env
-      #     envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Make EnvFile
         run: |
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
@@ -49,12 +44,23 @@ jobs:
 
       # Create zip file and upload to Lambda function called sealion
       - name: 🧠 Upload zip file to Lambda function
-        # 1. Move to site-packages directory and create zip file from the files of dependencies on root directory
-        # 2. Move to home previous directory
+        # 1. Add DATABASE_URL to .env-dev file and add dotenv path to config.py for lambda
+        # 2. Create zip file called aws_lambda_artifact.zip that is including dependencies folders
         # 3. Add app folder to zip file I made
         # 4. Upload the zip file to Lambda function by using aws command.
         run: |
+          echo "1. add DATABASE_URL to .env-dev and add dotenv path for lambda"
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env-dev
+          cd volcano/core
+          echo "dotenv_path = Path('.env-dev')
+          load_dotenv(dotenv_path=dotenv_path)
+          DATABASE_URL = os.getenv(DATABASE_URL)" >> config.py
+
+          echo "2. create zip file"
           cd .dockervenv/lib/python3.9/site-packages && zip -r9 ../../../../aws_lambda_artifact.zip .
           cd -
+          zip -g ./aws_lambda_artifact.zip -r .env-dev
           zip -g ./aws_lambda_artifact.zip -r volcano
+
+          echo "3. upload zip file to lambda function"
           aws lambda update-function-code --function-name volcano --zip-file fileb://aws_lambda_artifact.zip --publish
