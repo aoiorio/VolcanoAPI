@@ -40,12 +40,21 @@ jobs:
 
       # Create zip file and upload to Lambda function called sealion
       - name: 🧠 Upload zip file to Lambda function
-        # 1. Move to site-packages directory and create zip file from the files of dependencies on root directory
-        # 2. Move to home previous directory
+        # 1. Create .env file to add DATABASE_URL
+        # 2. Create zip file called aws_lambda_artifact.zip that is including dependencies folders
         # 3. Add app folder to zip file I made
         # 4. Upload the zip file to Lambda function by using aws command.
         run: |
+          echo "1. create .env file and add DATABASE_URL to .env"
+          touch .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          cat .env
+
+          echo "2. create zip file"
           cd .dockervenv/lib/python3.9/site-packages && zip -r9 ../../../../aws_lambda_artifact.zip .
           cd -
+          zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
+
+          echo "3. upload zip file to lambda function"
           aws lambda update-function-code --function-name volcano --zip-file fileb://aws_lambda_artifact.zip --publish

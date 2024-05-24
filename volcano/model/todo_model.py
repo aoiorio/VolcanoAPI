@@ -6,7 +6,6 @@ from .volcano_user_model import VolcanoUser
 from .base_model import BaseModel
 from uuid import uuid4
 
-print("todo model")
 class Todo(BaseModel):
     __tablename__ = "todo"
 

@@ -5,7 +5,6 @@ from sqlalchemy.sql import func
 from .base_model import BaseModel
 from uuid import uuid4
 
-print("user model")
 
 class VolcanoUser(BaseModel):
     __tablename__ = 'volcano_user'
