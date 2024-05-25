@@ -51,8 +51,8 @@ jobs:
           cat .env
 
           echo "2. create zip file"
-
-          cd .dockervenv/lib/python3.9/site-packages && rm psycopg2 && zip -r9 ../../../../aws_lambda_artifact.zip .
+          rm psycopg2
+          cd .dockervenv/lib/python3.9/site-packages && zip -r9 ../../../../aws_lambda_artifact.zip .
           cd -
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
