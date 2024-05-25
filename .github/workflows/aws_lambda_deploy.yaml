@@ -51,8 +51,8 @@ jobs:
           cat .env
 
 
-          echo "2. create zip file "
-          cd aws_lambda_dependencies && zip -r9 ../aws_lambda_artifact.zip . && cd -
+          echo "2. create zip file (remove psycopg2 and psycopg2_binary.libs folders)"
+
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
 
