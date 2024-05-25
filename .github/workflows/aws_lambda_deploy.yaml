@@ -52,7 +52,7 @@ jobs:
 
 
           echo "2. create zip file "
-          cd .dockervenv/lib/python3.9/site-packages && zip -r9 ../../../../aws_lambda_artifact.zip . && cd -
+          cd aws_lambda_dependencies && zip -r9 ../aws_lambda_artifact.zip . && cd -
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
 
