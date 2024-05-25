@@ -50,9 +50,13 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
           cat .env
 
-          echo "2. create zip file"
-          cd .dockervenv/lib/python3.9/site-packages && zip -r9 ../../../../aws_lambda_artifact.zip .
-          cd -
+
+          echo "2. create zip file (remove psycopg2 and psycopg2_binary.libs folders)"
+          cd .dockervenv/lib/python3.9/site-packages
+          rm -r psycopg2 && rm -r psycopg2_binary.libs
+          zip -r9 ../../../../aws_lambda_artifact.zip . && cd -
+
+          cd lambda-psycopg2 && zip -g ../aws_lambda_artifact.zip -r . && cd -
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
 
