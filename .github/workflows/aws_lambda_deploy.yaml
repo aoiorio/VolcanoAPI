@@ -50,10 +50,12 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
           cat .env
 
-          echo "2. create zip file"
+
+          echo "2. create zip file (add psycopg2 for lambda due to the bug)"
           cd .dockervenv/lib/python3.9/site-packages && rm -r psycopg2
           zip -r9 ../../../../aws_lambda_artifact.zip .
           cd -
+          zip -g ./aws_lambda_artifact.zip -r lambda-psycopg2
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
 
