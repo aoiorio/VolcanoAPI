@@ -13,7 +13,7 @@ app = FastAPI(
 
 @app.get("/")
 async def hello():
-    return {"message": "World"}
+    return {"message": "Hi World"}
 
 
 

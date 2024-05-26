@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ....model.todo_model import Todo
 
 
+
 router = APIRouter(
     prefix="/todo",
     tags=["todo"],
@@ -27,6 +28,3 @@ db_dependency = Annotated[Session, Depends(get_db)]
 async def read_all_todos(db: db_dependency):
     return db.query(Todo).all()
 
-# @router.get("/database")
-# async def read_database(db: db_dependency):
-#     return db.()

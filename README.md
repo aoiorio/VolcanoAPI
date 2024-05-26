@@ -35,27 +35,49 @@ $ docker-compose build --no-cache
         └── 📁v1
             └── __init__.py
             └── 📁endpoints
-                └── todo.py
                 └── __init__.py
+                └── todo.py
             └── routes.py
     └── 📁core
         └── __init__.py
         └── config.py
         └── database.py
+    └── 📁domain
+        └── __init__.py
+        └── 📁entity
+            └── __init__.py
+            └── todo.py
+            └── user.py
+        └── 📁repository
+            └── 📁auth
+                └── __init__.py
+                └── auth_repository.py
+            └── 📁todo
+                └── __init__.py
+                └── todo_repository.py
+    └── 📁infrastructure
+        └── __init__.py
+        └── 📁repository
+            └── 📁auth
+                └── __init__.py
+                └── auth_repository_impl.py
+            └── 📁todo
+                └── __init__.py
+                └── todo_repository_impl.py
     └── 📁model
+        └── __init__.py
+        └── base_model.py
         └── todo_model.py
         └── volcano_user_model.py
+    └── 📁use_case
         └── __init__.py
-    └── 📁repository
-        └── __init__.py
-        └── base_repository.py
-    └── 📁schema
-        └── __init__.py
-        └── base_schema.py
-    └── 📁service
-        └── __init__.py
-        └── base_service.py
-    └── main.py
+        └── 📁auth
+            └── __init__.py
+            └── auth_use_case.py
+        └── 📁todo
+            └── __init__.py
+            └── todo_use_case.py
+    └── main.py -- main file of Volcano
 ```
 
 <br>
@@ -77,5 +99,5 @@ $ docker-compose build --no-cache
 
 <br>
 
-- AWS API Gateway and AWS Lambda
+- AWS API Gateway and AWS Lambda 🤐
     - [How to connect Lambda function to API Gateway](https://www.deadbear.io/simple-serverless-fastapi-with-aws-lambda/#serverless-fastapi-with-aws-lambda)
