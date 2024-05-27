@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from ....infrastructure.postgresql.dto.todo_dto import TodoDTO
+from ....infrastructure.postgresql.dto.volcano_user_dto import VolcanoUserDTO
 
 
 
 router = APIRouter(
-    prefix="/todo",
-    tags=["todo"],
+    prefix="/auth",
+    tags=["auth"],
 )
 
 
@@ -22,9 +22,3 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
-
-
-@router.get("/")
-async def read_all_todos(db: db_dependency):
-    return db.query(TodoDTO).all()
-

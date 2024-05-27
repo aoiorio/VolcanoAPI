@@ -9,14 +9,16 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
+from volcano.infrastructure.postgresql.database import BaseModel, engine
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-config.set_main_option('sqlalchemy.url', DATABASE_URL)
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -26,9 +28,8 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 
-from volcano.model import base_model
 
-target_metadata = base_model.BaseModel.metadata
+target_metadata = BaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -68,16 +69,13 @@ def run_migrations_online() -> None:
 
     """
     url = config.get_main_option("sqlalchemy.url")
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        url=url,
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+    connectable = engine
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            url=url,
+            connection=connection,
+            target_metadata=target_metadata,
         )
 
         with context.begin_transaction():
