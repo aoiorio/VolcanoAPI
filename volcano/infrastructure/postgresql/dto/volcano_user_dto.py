@@ -1,23 +1,20 @@
 # NOTE This file is for creating a table called volcano_user
-
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, text
-from sqlalchemy.types import TIMESTAMP, Uuid, DateTime
-
-from sqlalchemy.dialects.postgresql import UUID
+# NOTE DTO stands for Data Transfer Object
+from sqlalchemy import text
+from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.sql import func
-from sqlalchemy.orm import Mapped, MappedAsDataclass, mapped_column
-from datetime import datetime
+from sqlalchemy.orm import Mapped, mapped_column
 
 from ..database import BaseModel
 from ....domain.entity.user import VolcanoUser
-import uuid
 
-# from ....domain.entity.user import VolcanoUserEntity
+import uuid
+from datetime import datetime
 
 
 class VolcanoUserDTO(BaseModel):
     __tablename__ = "volcano_user"
-    __table_args__ = {"comment": "This is user master table"}
+    __table_args__ = {"comment": "This is volcano_user master table"}
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     # NOTE Generate uuid as default value
@@ -25,6 +22,7 @@ class VolcanoUserDTO(BaseModel):
     # NOTE server_default can insert default sentence in postgres command when I create a table
     user_id: Mapped[uuid.UUID] = mapped_column(
         server_default=text("uuid_generate_v4()"),
+        nullable=False,
         unique=True,
     )
     username: Mapped[str] = mapped_column(nullable=False)
