@@ -25,12 +25,12 @@ class VolcanoUserDTO(BaseModel):
         nullable=False,
         unique=True,
     )
-    username: Mapped[str] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=True)
     hashed_password: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
-    icon: Mapped[str]
+    icon: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now(),)
-    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), onupdate=func.now(),)
+    updated_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), default=func.now(), onupdate=func.now(), nullable=True)
 
     # NOTE This method is for combining to entity called VolcanoUser
     def to_entity(self) -> VolcanoUser:
@@ -38,6 +38,7 @@ class VolcanoUserDTO(BaseModel):
             id=self.id,
             user_id=self.user_id,
             username=self.username,
+            email=self.email,
             hashed_password=self.hashed_password,
             icon=self.icon,
             created_at=self.created_at,
@@ -51,6 +52,7 @@ class VolcanoUserDTO(BaseModel):
             id=volcano_user.id,
             user_id=volcano_user.user_id,
             username=volcano_user.username,
+            email=volcano_user.email,
             hashed_password=volcano_user.hashed_password,
             icon=volcano_user.icon,
             created_at=volcano_user.created_at,
