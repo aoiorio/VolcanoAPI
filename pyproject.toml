@@ -16,8 +16,12 @@ alembic = "^1.13.1"
 psycopg2-binary = "^2.9.9"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
-bcrypt = "3.2.2"
-cryptography = "3.4.8"
+
+
+pynacl = {version = "^1.5.0", platform = "manylinux1_x86_64"}
+cffi = {version = "^1.16.0", platform = "manylinux1_x86_64"}
+bcrypt = {version = "^4.1.3", platform = "manylinux1_x86_64"}
+cryptography = {version = "^42.0.7", platform = "manylinux2014_x86_64"}
 
 
 [build-system]
