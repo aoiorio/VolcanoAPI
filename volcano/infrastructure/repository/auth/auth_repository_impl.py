@@ -4,9 +4,9 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm.session import Session
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import jwt, JWTError
 from fastapi.responses import Response
-
+# from http.client import HTTPResponse
 from volcano.domain.entity.user import VolcanoUser
 from ...postgresql.dto.volcano_user_dto import VolcanoUserDTO
 from ....domain.repository.auth.auth_repository import AuthRepository
@@ -37,8 +37,6 @@ class AuthRepositoryImpl(AuthRepository):
     def find_by_id(self, user_id: str) -> Optional[VolcanoUser]:
         try:
             volcano_user_dto = self.db.query(VolcanoUserDTO).filter_by(user_id=user_id).first()
-        except NoResultFound:
-            return None
         except:
             raise
         return volcano_user_dto # this will cause an error volcano_user_dto.to_entity()
@@ -72,18 +70,37 @@ class AuthRepositoryImpl(AuthRepository):
         except:
             raise
 
-    def sign_in(self, user_id: str) -> Optional[VolcanoUser]:
-        response = Response
+    def sign_in(self, user_id: str, response: Response) -> Optional[str]:
+        # response = Response
+        # response = HTTPResponse("")
+        # NOTE it's a different function from creating cookie , so you can do it in another function called sign_in_for_token() or you can rename this function to it.
+        # NOTE Then it will return a string access token (JWT)
         try:
-            access_token = create_access_token(data={'sub': user_id}, expires_delta=300)
+            access_token = create_access_token(data={'sub': str(user_id),}, expires_delta=300)
+            print(f"Here is access_token {access_token}")
             response.set_cookie(key="access_token", value=access_token, httponly=True)
+            return access_token
         except:
             raise
 
-    def sign_out(self) -> Optional[VolcanoUser]:
-        response = Response
-
+    def get_current_user(self, token: str) -> Optional[VolcanoUser]:
+        # NOTE get request in an usecase file.
         try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            user_id: str = payload.get("sub")
+            print(user_id)
+            volcano_user_dto = self.db.query(VolcanoUserDTO).filter_by(user_id=user_id).first()
+
+            return volcano_user_dto
+        except JWTError:
+            raise
+        except:
+            raise
+
+    def sign_out(self, response: Response) -> Optional[VolcanoUser]:
+        # response = Response
+        try:
+            print("this is sign_out!!")
             response.delete_cookie(key="access_token")
         except:
             raise
