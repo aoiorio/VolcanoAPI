@@ -14,8 +14,8 @@ python-dotenv = "^1.0.1"
 sqlalchemy = "2.0.29"
 alembic = "^1.13.1"
 psycopg2-binary = "^2.9.9"
-passlib = "^1.7.4"
-python-jose = "^3.3.0"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 bcrypt = "^4.1.3"
 
 
