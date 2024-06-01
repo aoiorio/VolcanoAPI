@@ -15,4 +15,3 @@ class UserRepositoryImpl(UserRepository):
     def get_user_info(self, token: str) -> Optional[VolcanoUser]:
         volcano_user = self.auth_repository.get_current_user(token)
         return volcano_user
-

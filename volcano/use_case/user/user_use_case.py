@@ -4,6 +4,7 @@ from typing import Optional
 from volcano.domain.entity.user import VolcanoUser
 from fastapi import Request, HTTPException
 from ...domain.repository.user.user_repository import UserRepository
+import hashlib
 
 class UserUseCase(metaclass=ABCMeta):
     @classmethod

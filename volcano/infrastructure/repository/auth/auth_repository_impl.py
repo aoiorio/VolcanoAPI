@@ -11,13 +11,27 @@ from volcano.domain.entity.user import VolcanoUser
 from ...postgresql.dto.volcano_user_dto import VolcanoUserDTO
 from ....domain.repository.auth.auth_repository import AuthRepository
 from ....core.config import SECRET_KEY, ALGORITHM
+from passlib.hash import scrypt, sha256_crypt, argon2
+
+# from passlib.hash import sha256_crypt
+
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # create hash password
 def create_password_hash(user_password: str):
-    return bcrypt_context.hash(user_password)
+    # hashed_password_class = hashlib.sha256(user_password.encode('utf-8'))
+    # hashed_password = hashed_password_class.hexdigest()
+    # hashed_password = scrypt.hash(user_password)
+    # print(f"hashed_password by using scrypt: {hashed_password}")
+    hashed_password = sha256_crypt.encrypt(user_password)
+    print(f"hashed_password by using sha256: {hashed_password}")
+    hashed_password = argon2.hash(user_password)
+    print(f"hashed_password by using argon2: {hashed_password}")
+
+    # return bcrypt_context.hash(user_password)
+    return hashed_password
 
 
 # create access token for signIn and signUp
@@ -51,7 +65,12 @@ class AuthRepositoryImpl(AuthRepository):
 
     # verify passwords that users inputted and hashed password
     def verify_user_password(self, plain_password: str, hashed_password: str) -> bool:
-        return bcrypt_context.verify(plain_password, hashed_password)
+        print(f"verify_user_password: {hashed_password}")
+        # result = scrypt.verify(plain_password, hashed_password)
+        result = sha256_crypt.verify(plain_password, hashed_password)
+        print(result)
+        # return bcrypt_context.verify(plain_password, hashed_password)
+        return result
 
     def sign_up(self, volcano_user: VolcanoUser) -> Optional[VolcanoUser]:
         print(f"volcano_user from repository impl file is here {volcano_user}")
