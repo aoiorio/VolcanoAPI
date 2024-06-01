@@ -25,8 +25,8 @@ def create_password_hash(user_password: str):
     # hashed_password = hashed_password_class.hexdigest()
     # hashed_password = scrypt.hash(user_password)
     # print(f"hashed_password by using scrypt: {hashed_password}")
-    hashed_password = sha256_crypt.encrypt(user_password)
-    print(f"hashed_password by using sha256: {hashed_password}")
+    # hashed_password = sha256_crypt.encrypt(user_password)
+    # print(f"hashed_password by using sha256: {hashed_password}")
     hashed_password = argon2.hash(user_password)
     print(f"hashed_password by using argon2: {hashed_password}")
 
