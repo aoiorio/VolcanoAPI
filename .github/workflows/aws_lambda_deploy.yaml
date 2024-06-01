@@ -48,9 +48,9 @@ jobs:
         run: |
           echo "1. create .env file and add DATABASE_URL to .env"
           touch .env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
-          echo "ALGORITHM=${{ secrets.ALGORITHM }}" > .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "ALGORITHM=${{ secrets.ALGORITHM }}" >> .env
           cat .env
 
 
