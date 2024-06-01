@@ -8,7 +8,7 @@ from .api.v1.routes import routes as v1_routes
 app = FastAPI(
     title=APP_NAME,
     version=VERSION,
-    root_path="/dev/",
+    # root_path="/dev/",
 )
 
 

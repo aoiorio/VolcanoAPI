@@ -38,9 +38,9 @@ jobs:
           # Specify python version (I think it must be the same version as I set in Lambda function)
           python-version: '3.9'
 
-      # Create zip file and upload to Lambda function called sealion
+      # Create zip file and upload to Lambda function called volcano
       - name: 🧠 Upload zip file to Lambda function
-        # 1. Create .env file to add DATABASE_URL
+        # 1. Create .env file to add DATABASE_URL, SECRET_KEY and ALGORITHM
         # 2. Create zip file called aws_lambda_artifact.zip that is including dependencies folders
         # 3. Add app folder to zip file I made
         # 4. Upload the zip file to Lambda function by using aws command.
@@ -56,10 +56,8 @@ jobs:
 
           echo "2. create zip file (remove psycopg2 and psycopg2_binary.libs folders)"
           cd .dockervenv/lib/python3.9/site-packages
-          # rm -r psycopg2 && rm -r psycopg2_binary.libs
           zip -r9 ../../../../aws_lambda_artifact.zip . && cd -
 
-          # cd lambda-psycopg2 && zip -g ../aws_lambda_artifact.zip -r . && cd -
           zip -g ./aws_lambda_artifact.zip -r .env
           zip -g ./aws_lambda_artifact.zip -r volcano
 

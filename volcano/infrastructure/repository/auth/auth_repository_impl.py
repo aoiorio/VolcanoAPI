@@ -25,8 +25,6 @@ def create_password_hash(user_password: str):
         time_cost=1, memory_cost=2**16, parallelism=4, salt_size=128, digest_size=256
     ).hash(user_password)
 
-    print(hashed_password.split('$'))
-
     return hashed_password
 
 
@@ -65,7 +63,6 @@ class AuthRepositoryImpl(AuthRepository):
 
     # verify passwords that users inputted and hashed password
     def verify_user_password(self, plain_password: str, hashed_password: str) -> bool:
-        # result = argon2.verify(plain_password, hashed_password)
         return argon2.verify(plain_password, hashed_password)
 
     def sign_up(self, volcano_user: VolcanoUser) -> Optional[VolcanoUser]:

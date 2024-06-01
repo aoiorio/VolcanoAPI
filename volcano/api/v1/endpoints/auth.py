@@ -48,7 +48,7 @@ async def sign_up_user(data: SignUpUserModel, auth_use_case: AuthUseCase = Depen
 async def sign_in_user(request: Request, response: Response, data: SignInUserModel, auth_use_case: AuthUseCase = Depends(auth_use_case),):
     # NOTE you can return user information if you want
     access_token = auth_use_case.sign_in_user(data=data, response=response, request=request)
-    return access_token
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/sign_out_user", status_code=status.HTTP_204_NO_CONTENT)
 async def sign_out_user(request: Request, response: Response, auth_use_case: AuthUseCase = Depends(auth_use_case)):
