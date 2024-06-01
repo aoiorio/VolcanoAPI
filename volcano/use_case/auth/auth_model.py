@@ -1,10 +1,10 @@
 from pydantic import BaseModel, Field
 
 class SignUpUserModel(BaseModel):
-    email: str
-    password: str
-    confirm_password: str
+    email: str = Field(min_length=3)
+    password: str = Field(min_length=4)
+    confirm_password: str = Field(min_length=4)
 
 class SignInUserModel(BaseModel):
-    email: str
-    password: str
+    email: str = Field(min_length=3)
+    password: str = Field(min_length=4)
