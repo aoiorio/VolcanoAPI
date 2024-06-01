@@ -22,7 +22,7 @@ from passlib.hash import argon2
 def create_password_hash(user_password: str):
     print("create_password_hash!!")
     hashed_password = argon2.using(
-        time_cost=2, memory_cost=2**16, parallelism=4, salt_size=128, digest_size=256
+        time_cost=1, memory_cost=2**16, parallelism=4, salt_size=128, digest_size=256
     ).hash(user_password)
 
     print(hashed_password.split('$'))
