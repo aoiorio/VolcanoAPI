@@ -50,7 +50,7 @@ async def sign_up_user(
     # print("hello create user method")
     # print(data)
     access_token = auth_use_case.sign_up_user(data, response)
-    return access_token
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/sign_in_user")
