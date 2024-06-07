@@ -22,7 +22,7 @@ class AuthRepository(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def sign_up(self, volcano_user: VolcanoUser) -> Optional[VolcanoUser]:
+    def sign_up(self, volcano_user: VolcanoUser, response: Response) -> Optional[str]:
         ...
 
     @abstractmethod

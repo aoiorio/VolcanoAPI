@@ -23,7 +23,7 @@ class UserUseCaseImpl(UserUseCase):
         try:
             token = request.cookies.get("access_token")
             if token == None:
-                raise HTTPException(status_code=404, detail="You haven't signed in")
+                raise HTTPException(status_code=401, detail="You haven't signed in")
             volcano_user = self.user_repository.get_user_info(token)
 
             if volcano_user == None:
