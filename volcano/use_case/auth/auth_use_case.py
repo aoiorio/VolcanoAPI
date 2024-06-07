@@ -14,7 +14,7 @@ class AuthUseCase(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def sign_up_user(self, data: SignUpUserModel) -> Optional[VolcanoUser]:
+    def sign_up_user(self, data: SignUpUserModel, response: Response) -> Optional[VolcanoUser]:
         ...
 
     @abstractmethod
@@ -34,7 +34,7 @@ class AuthUseCaseImpl(AuthUseCase):
     def __init__(self, auth_repository: AuthRepository):
         self.auth_repository: AuthRepository = auth_repository
 
-    def sign_up_user(self, data: SignUpUserModel) -> Optional[VolcanoUser]:
+    def sign_up_user(self, data: SignUpUserModel, response: Response) -> Optional[VolcanoUser]:
         if data.password != data.confirm_password:
             raise HTTPException(status_code=404, detail="Confirm password is different")
 
@@ -47,9 +47,9 @@ class AuthUseCaseImpl(AuthUseCase):
         # NOTE hashed_password is not hashed yet
         volcano_user = VolcanoUser(email=data.email, hashed_password=data.password)
 
-        self.auth_repository.sign_up(volcano_user)
+        access_token = self.auth_repository.sign_up(volcano_user, response)
 
-        return volcano_user
+        return access_token
 
     # I think that this can return volcano_user object
     def sign_in_user(self, data: SignInUserModel, response: Response, request: Request) -> Optional[str]:

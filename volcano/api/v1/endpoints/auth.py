@@ -7,7 +7,10 @@ from starlette import status
 
 
 from ....infrastructure.postgresql.dto.volcano_user_dto import VolcanoUserDTO
-from ....infrastructure.repository.auth.auth_repository_impl import AuthRepository, AuthRepositoryImpl
+from ....infrastructure.repository.auth.auth_repository_impl import (
+    AuthRepository,
+    AuthRepositoryImpl,
+)
 
 from ....use_case.auth.auth_model import SignInUserModel, SignUpUserModel
 from ....use_case.auth.auth_use_case import AuthUseCaseImpl, AuthUseCase
@@ -37,20 +40,38 @@ def auth_use_case(db: Session = Depends(get_db)) -> AuthUseCase:
     # repository: AuthRepositoryImpl
     return AuthUseCaseImpl(auth_repository)
 
+
 @router.post("/sign_up_user")
-async def sign_up_user(data: SignUpUserModel, auth_use_case: AuthUseCase = Depends(auth_use_case)):
-    print("hello create user method")
-    print(data)
-    volcano_user = auth_use_case.sign_up_user(data)
-    return volcano_user
+async def sign_up_user(
+    data: SignUpUserModel,
+    response: Response,
+    auth_use_case: AuthUseCase = Depends(auth_use_case),
+):
+    # print("hello create user method")
+    # print(data)
+    access_token = auth_use_case.sign_up_user(data, response)
+    return access_token
+
 
 @router.post("/sign_in_user")
-async def sign_in_user(request: Request, response: Response, data: SignInUserModel, auth_use_case: AuthUseCase = Depends(auth_use_case),):
+async def sign_in_user(
+    request: Request,
+    response: Response,
+    data: SignInUserModel,
+    auth_use_case: AuthUseCase = Depends(auth_use_case),
+):
     # NOTE you can return user information if you want
-    access_token = auth_use_case.sign_in_user(data=data, response=response, request=request)
+    access_token = auth_use_case.sign_in_user(
+        data=data, response=response, request=request
+    )
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @router.get("/sign_out_user", status_code=status.HTTP_204_NO_CONTENT)
-async def sign_out_user(request: Request, response: Response, auth_use_case: AuthUseCase = Depends(auth_use_case)):
+async def sign_out_user(
+    request: Request,
+    response: Response,
+    auth_use_case: AuthUseCase = Depends(auth_use_case),
+):
     auth_use_case.sign_out_user(response=response, request=request)
     return {"detail": "Successfully signed out"}

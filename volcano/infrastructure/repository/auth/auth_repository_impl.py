@@ -65,7 +65,7 @@ class AuthRepositoryImpl(AuthRepository):
     def verify_user_password(self, plain_password: str, hashed_password: str) -> bool:
         return argon2.verify(plain_password, hashed_password)
 
-    def sign_up(self, volcano_user: VolcanoUser) -> Optional[VolcanoUser]:
+    def sign_up(self, volcano_user: VolcanoUser, response: Response) -> Optional[str]:
         print(f"volcano_user from repository impl file is here {volcano_user}")
         # NOTE Get volcano user and define as volcano user dto for adding to database
         volcano_user_dto = VolcanoUserDTO.from_entity(volcano_user)
@@ -79,6 +79,11 @@ class AuthRepositoryImpl(AuthRepository):
             # ! you don't have to do error handling here because you can do it on usecase files
             self.db.add(volcano_user_dto)
             self.db.commit()
+
+            userEmail = self.find_by_email(volcano_user.email)
+            access_token = self.sign_in(userEmail.user_id, response)
+            print(access_token)
+            return access_token
         except:
             raise
 
