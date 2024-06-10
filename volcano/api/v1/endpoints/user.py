@@ -32,6 +32,6 @@ def user_use_case(db: Session = Depends(get_db)) -> UserUseCase:
 
 
 @router.get("/")
-async def get_user_info(request: Request, user_use_case: UserUseCase = Depends(user_use_case)):
-    volcano_user = user_use_case.find_user_info(request)
+async def get_user_info(token: str, user_use_case: UserUseCase = Depends(user_use_case)):
+    volcano_user = user_use_case.find_user_info(token)
     return volcano_user
