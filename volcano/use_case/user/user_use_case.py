@@ -9,7 +9,7 @@ import hashlib
 class UserUseCase(metaclass=ABCMeta):
     @classmethod
     @abstractmethod
-    def find_user_info(self, request: Request) -> Optional[VolcanoUser]:
+    def find_user_info(self, token: str) -> Optional[VolcanoUser]:
         ...
 
 
@@ -19,9 +19,9 @@ class UserUseCaseImpl(UserUseCase):
         self.user_repository = user_repository
         # self.auth_repository: AuthRepository = AuthRepositoryImpl
 
-    def find_user_info(self, request: Request) -> Optional[VolcanoUser]:
+    def find_user_info(self, token: str) -> Optional[VolcanoUser]:
         try:
-            token = request.cookies.get("access_token")
+            # token = request.cookies.get("access_token")
             if token == None:
                 raise HTTPException(status_code=401, detail="You haven't signed in")
             volcano_user = self.user_repository.get_user_info(token)
