@@ -1,8 +1,6 @@
 from typing import Optional
 
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm.session import Session
-from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from fastapi.responses import Response
@@ -103,6 +101,14 @@ class AuthRepositoryImpl(AuthRepository):
         except:
             raise
 
+    def sign_out(self, response: Response) -> Optional[VolcanoUser]:
+        # response = Response
+        try:
+            print("You will sign out!")
+            response.delete_cookie(key="access_token")
+        except:
+            raise
+
     def get_current_user(self, token: str) -> Optional[VolcanoUser]:
         # NOTE get request in an usecase file.
         try:
@@ -116,13 +122,5 @@ class AuthRepositoryImpl(AuthRepository):
             return volcano_user_dto
         except JWTError:
             raise
-        except:
-            raise
-
-    def sign_out(self, response: Response) -> Optional[VolcanoUser]:
-        # response = Response
-        try:
-            print("You will sign out!")
-            response.delete_cookie(key="access_token")
         except:
             raise

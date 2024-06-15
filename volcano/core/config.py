@@ -10,6 +10,11 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
+TEBI_ACCESS_KEY_ID = os.getenv("TEBI_ACCESS_KEY_ID")
+TEBI_SECRET_ACCESS_KEY = os.getenv("TEBI_SECRET_ACCESS_KEY")
+TEBI_URL = os.getenv("TEBI_URL")
+TEBI_BUCKET_NAME = os.getenv("TEBI_BUCKET_NAME")
+
 APP_NAME = "VolcanoAPI"
 VERSION = "v1.0.0"
 

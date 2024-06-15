@@ -7,6 +7,7 @@ from starlette import status
 from ....use_case.user.user_use_case import UserUseCase, UserUseCaseImpl
 from ....infrastructure.repository.user.user_repository_impl import UserRepository, UserRepositoryImpl
 
+
 router = APIRouter(
     prefix="/user",
     tags=["user"],

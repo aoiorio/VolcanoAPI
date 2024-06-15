@@ -16,7 +16,7 @@ class VolcanoUserDTO(BaseModel):
     __tablename__ = "volcano_user"
     __table_args__ = {"comment": "This is volcano_user master table"}
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     # NOTE Generate uuid as default value
     # ! you must add unique=True field for migrating Foreign Key from other tables!!!!
     # NOTE server_default can insert default sentence in postgres command when I create a table

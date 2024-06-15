@@ -20,20 +20,20 @@ class TodoDTO(BaseModel):
     __tablename__ = "todo"
     __table_args__ = {"comment": "This is todo master table"}
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     todo_id: Mapped[uuid.UUID] = mapped_column(
         server_default=text("uuid_generate_v4()"),
         primary_key=True,
         nullable=False,
     )
     title: Mapped[str] = mapped_column(nullable=False)
-    description: Mapped[str]
+    description: Mapped[str] = mapped_column(nullable=True)
     period: Mapped[datetime] = mapped_column(nullable=False)
     priority: Mapped[int] = mapped_column(
         default=1,
         server_default=text("1"),
     )
-    type: Mapped[str]
+    type: Mapped[str] = mapped_column(nullable=True)
     user_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("volcano_user.user_id", ondelete="CASCADE"),
         nullable=False,
@@ -51,6 +51,7 @@ class TodoDTO(BaseModel):
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True),
         onupdate=func.now(),
+        nullable=True,
     )
 
         # NOTE This method is for combining to entity called VolcanoUser

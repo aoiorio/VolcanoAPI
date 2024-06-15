@@ -47,8 +47,6 @@ async def sign_up_user(
     response: Response,
     auth_use_case: AuthUseCase = Depends(auth_use_case),
 ):
-    # print("hello create user method")
-    # print(data)
     access_token = auth_use_case.sign_up_user(data, response)
     return {"access_token": access_token, "token_type": "bearer"}
 
