@@ -7,6 +7,8 @@ import boto3
 import random, string
 from datetime import datetime
 
+
+
 # NOTE Project Libraries
 from ....domain.entity.todo import Todo
 from ....domain.repository.todo.todo_repository import TodoRepository
@@ -24,15 +26,21 @@ def get_audio_url(data: bytes):
         service_name="s3",
         aws_access_key_id=TEBI_ACCESS_KEY_ID,
         aws_secret_access_key=TEBI_SECRET_ACCESS_KEY,
-        endpoint_url="https://s3.tebi.io",
+        endpoint_url=TEBI_URL,
     )
     audio_name = generate_random_audio_name(12)
     print(audio_name)
     bucket = s3.Bucket(TEBI_BUCKET_NAME)
     bucket.put_object(Key=f"{audio_name}.mp3", Body=data)
 
-    # return "https://s3.tebi.io/" + 'volcano-bucket/' + audio_name
     return f"{TEBI_URL}/{TEBI_BUCKET_NAME}/{audio_name}.mp3"
+
+def recognize_voice(bytes_audio: bytes):
+    r = sr.Recognizer()
+    harvard = sr.AudioFile(bytes_audio)
+    with harvard as source:
+        audio = r.record(source)
+    print(audio)
 
 
 class TodoRepositoryImpl(TodoRepository):
@@ -40,6 +48,8 @@ class TodoRepositoryImpl(TodoRepository):
         self.db: Session = db
 
     def post_todo(self, user_id: str, bytes_audio: bytes) -> Optional[Todo]:
+        # print(bytes_audio)
+        # recognize_voice(bytes_audio)
         # NOTE Convert Todo that is from user to TodoDTO
         try:
             # TODO Create function that returns Todo that are recognized from bytes_audio and define it as recognized_todo

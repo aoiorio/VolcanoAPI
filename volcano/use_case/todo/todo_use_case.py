@@ -2,11 +2,14 @@
 # NOTE Execute command is for executing repository file's methods
 # NOTE You must name each method like executeCreateTodo, executeReadTodo
 
-from abc import ABC, abstractmethod, ABCMeta
+from abc import abstractmethod, ABCMeta
 # from .todo_model import TodoPostModel
 from typing import Optional
 from volcano.domain.entity.todo import Todo
 from fastapi import HTTPException, UploadFile
+
+
+
 from ...infrastructure.repository.todo.todo_repository_impl import TodoRepository
 from ...infrastructure.repository.auth.auth_repository_impl import AuthRepository
 
@@ -26,10 +29,13 @@ class TodoUseCaseImpl(TodoUseCase):
         self.auth_repository: AuthRepository = auth_repository
 
     async def execute_post_todo(self, audio: UploadFile, token: str) -> Optional[Todo]:
-        user_id = self.auth_repository.get_current_user(token).user_id
+        try:
+            user_id = self.auth_repository.get_current_user(token).user_id
+        except:
+            raise HTTPException(status_code=404, detail="User not found")
 
         if user_id == None:
-            raise HTTPException(status_code=302, detail="User not found")
+            raise HTTPException(status_code=404, detail="User not found")
 
         bytes_audio = await audio.read()
 
@@ -40,5 +46,6 @@ class TodoUseCaseImpl(TodoUseCase):
 
         if todo == None:
             raise HTTPException(status_code=302, detail="Can't add this todo")
+
 
         return todo

@@ -40,6 +40,7 @@ def todo_use_case(db: Session = Depends(get_db)) -> TodoUseCase:
 
 @router.post("/")
 async def post_todo(audio: UploadFile, token: str, todo_use_case: TodoUseCase = Depends(todo_use_case),):
+    print(audio)
     todo = await todo_use_case.execute_post_todo(audio=audio, token=token)
     return todo
 
