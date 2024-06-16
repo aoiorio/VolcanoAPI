@@ -24,6 +24,7 @@ bcrypt = {version = "^4.1.3", platform = "manylinux2014_aarch64"}
 argon2-cffi = "^23.1.0"
 python-multipart = "^0.0.9"
 boto3 = "^1.34.125"
+dateparser = "^1.2.0"
 
 
 [build-system]
