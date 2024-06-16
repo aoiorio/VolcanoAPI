@@ -1,5 +1,5 @@
 # from ...infrastructure.repository.auth.auth_repository_impl import AuthRepositoryImpl
-from abc import ABC, abstractmethod, ABCMeta
+from abc import abstractmethod, ABCMeta
 from .auth_model import SignUpUserModel, SignInUserModel
 from typing import Optional
 from volcano.domain.entity.user import VolcanoUser
@@ -9,6 +9,7 @@ from fastapi.responses import Response
 from jose import JWTError
 
 from ...domain.repository.auth.auth_repository import AuthRepository
+
 
 class AuthUseCase(metaclass=ABCMeta):
 
@@ -29,6 +30,7 @@ class AuthUseCase(metaclass=ABCMeta):
     def get_current_user(self, request: Request) -> Optional[VolcanoUser]:
         ...
 
+
 class AuthUseCaseImpl(AuthUseCase):
 
     def __init__(self, auth_repository: AuthRepository):
@@ -40,7 +42,7 @@ class AuthUseCaseImpl(AuthUseCase):
 
         existing_user = self.auth_repository.find_by_email(email=data.email)
 
-        if existing_user != None:
+        if existing_user is not None:
             raise HTTPException(status_code=302, detail="This user exists")
 
         # NOTE ** means allocating values to VolcanoUser
@@ -57,8 +59,7 @@ class AuthUseCaseImpl(AuthUseCase):
         existing_user = self.auth_repository.find_by_email(data.email)
 
         # NOTE block not existing user
-        if existing_user == None:
-            print("existing_user")
+        if existing_user is None:
             raise HTTPException(status_code=302, detail="User not found")
 
         # NOTE check the password is correct or not
@@ -70,14 +71,13 @@ class AuthUseCaseImpl(AuthUseCase):
         # NOTE check wether the user has already signed in or not
         token = request.cookies.get("access_token")
 
-        if token != None:
+        if token is not None:
             self.auth_repository.sign_out(response)
-            # raise HTTPException(status_code=302, detail="You have already signed in")
 
         # NOTE user sign in feature
         access_token = self.auth_repository.sign_in(existing_user.user_id, response)
 
-        if access_token == None:
+        if access_token is None:
             raise HTTPException(status_code=404, detail="Something went wrong. Please try again")
 
         return access_token
@@ -86,7 +86,7 @@ class AuthUseCaseImpl(AuthUseCase):
 
         token = request.cookies.get("access_token")
 
-        if token == None:
+        if token is None:
             raise HTTPException(status_code=302, detail="User not found")
 
         self.auth_repository.sign_out(response)
@@ -95,12 +95,12 @@ class AuthUseCaseImpl(AuthUseCase):
     def get_current_user(self, request: Request) -> Optional[VolcanoUser]:
         try:
             token = request.cookies.get("access_token")
-            if token == None:
+            if token is None:
                 raise HTTPException(status_code=302, detail="User not found")
 
             volcano_user = self.auth_repository.get_current_user(token)
 
-            if volcano_user == None:
+            if volcano_user is None:
                 raise HTTPException(status_code=302, detail="User not found")
 
             return volcano_user

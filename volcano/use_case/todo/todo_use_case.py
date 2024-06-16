@@ -8,19 +8,19 @@ from typing import Optional
 from volcano.domain.entity.todo import Todo
 from fastapi import HTTPException, UploadFile
 
-
-
 from ...infrastructure.repository.todo.todo_repository_impl import TodoRepository
 from ...infrastructure.repository.auth.auth_repository_impl import AuthRepository
 
 
-from ...domain.repository.todo.todo_repository import TodoRepository
+# from ...domain.repository.todo.todo_repository import TodoRepository
+
 
 class TodoUseCase(metaclass=ABCMeta):
     @classmethod
     @abstractmethod
     async def execute_post_todo(self, audio: UploadFile, token: str) -> Optional[Todo]:
         ...
+
 
 class TodoUseCaseImpl(TodoUseCase):
 
@@ -34,18 +34,17 @@ class TodoUseCaseImpl(TodoUseCase):
         except:
             raise HTTPException(status_code=404, detail="User not found")
 
-        if user_id == None:
+        if user_id is None:
             raise HTTPException(status_code=404, detail="User not found")
 
         bytes_audio = await audio.read()
 
-        if bytes_audio == None:
+        if bytes_audio is None:
             raise HTTPException(status_code=302, detail="Can't load the audio")
 
         todo = self.todo_repository.post_todo(user_id=user_id, bytes_audio=bytes_audio)
 
-        if todo == None:
+        if todo is None:
             raise HTTPException(status_code=302, detail="Can't add this todo")
-
 
         return todo

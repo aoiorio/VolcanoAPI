@@ -13,6 +13,7 @@ app = FastAPI(
     root_path="/dev/",
 )
 
+
 @app.get("/")
 async def hello():
     return {"message": "Hi World"}

@@ -1,10 +1,9 @@
 from abc import abstractmethod, ABCMeta
 from typing import Optional
 
-from pydantic.dataclasses import dataclass
 from ...entity.user import VolcanoUser
 from fastapi.responses import Response
-from fastapi import Request
+
 
 class AuthRepository(metaclass=ABCMeta):
 

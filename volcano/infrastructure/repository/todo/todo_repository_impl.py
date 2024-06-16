@@ -2,23 +2,26 @@
 # NOTE You can use abc package to create class as implements class
 from typing import Optional
 from sqlalchemy.orm.session import Session
-from fastapi import UploadFile
 import boto3
 import random, string
 from datetime import datetime
-
 
 
 # NOTE Project Libraries
 from ....domain.entity.todo import Todo
 from ....domain.repository.todo.todo_repository import TodoRepository
 from ...postgresql.dto.todo_dto import TodoDTO
-from ..auth.auth_repository_impl import AuthRepository, AuthRepositoryImpl
-from ....core.config import TEBI_ACCESS_KEY_ID, TEBI_SECRET_ACCESS_KEY, TEBI_URL, TEBI_BUCKET_NAME
+from ....core.config import (
+    TEBI_ACCESS_KEY_ID,
+    TEBI_SECRET_ACCESS_KEY,
+    TEBI_URL,
+    TEBI_BUCKET_NAME,
+)
 
 
 def generate_random_audio_name(range: int):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=range))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=range))
+
 
 # NOTE I think I can prepare audio_url here as a function and set it in execute_post_todo method
 def get_audio_url(data: bytes):
@@ -35,26 +38,21 @@ def get_audio_url(data: bytes):
 
     return f"{TEBI_URL}/{TEBI_BUCKET_NAME}/{audio_name}.mp3"
 
-def recognize_voice(bytes_audio: bytes):
-    r = sr.Recognizer()
-    harvard = sr.AudioFile(bytes_audio)
-    with harvard as source:
-        audio = r.record(source)
-    print(audio)
-
 
 class TodoRepositoryImpl(TodoRepository):
     def __init__(self, db: Session):
         self.db: Session = db
 
     def post_todo(self, user_id: str, bytes_audio: bytes) -> Optional[Todo]:
-        # print(bytes_audio)
-        # recognize_voice(bytes_audio)
         # NOTE Convert Todo that is from user to TodoDTO
         try:
             # TODO Create function that returns Todo that are recognized from bytes_audio and define it as recognized_todo
             # TODO if there's no type in the audio I'll return type "other"
-            recognized_todo = Todo(title="Create Voice-Recognized feature", type="Programming", period=datetime.now())
+            recognized_todo = Todo(
+                title="Create Voice-Recognized feature",
+                type="Programming",
+                period=datetime.now(),
+            )
             todo_dto = TodoDTO.from_entity(recognized_todo)
             todo_dto.audio_url = get_audio_url(bytes_audio)
             print(todo_dto.audio_url)

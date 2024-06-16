@@ -5,8 +5,6 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 
-
-from ....infrastructure.postgresql.dto.volcano_user_dto import VolcanoUserDTO
 from ....infrastructure.repository.auth.auth_repository_impl import (
     AuthRepository,
     AuthRepositoryImpl,

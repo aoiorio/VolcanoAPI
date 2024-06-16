@@ -20,7 +20,11 @@ from passlib.hash import argon2
 def create_password_hash(user_password: str):
     print("create_password_hash!!")
     hashed_password = argon2.using(
-        time_cost=1, memory_cost=2**16, parallelism=4, salt_size=128, digest_size=256
+        time_cost=1,
+        memory_cost=2**16,
+        parallelism=4,
+        salt_size=128,
+        digest_size=256,
     ).hash(user_password)
 
     return hashed_password
@@ -47,7 +51,8 @@ class AuthRepositoryImpl(AuthRepository):
             )
         except:
             raise
-        return volcano_user_dto  # this will cause an error volcano_user_dto.to_entity()
+        # this will cause an error volcano_user_dto.to_entity()
+        return volcano_user_dto
 
     def find_by_email(self, email: str) -> Optional[VolcanoUser]:
         # hashed_password = create_password_hash(user_password)
