@@ -21,6 +21,10 @@ class TodoUseCase(metaclass=ABCMeta):
     async def execute_post_todo(self, audio: UploadFile, token: str) -> Optional[Todo]:
         ...
 
+    @abstractmethod
+    def execute_text_to_todo(self, voice_text: str) -> Optional[Todo]:
+        ...
+
 
 class TodoUseCaseImpl(TodoUseCase):
 
@@ -48,3 +52,9 @@ class TodoUseCaseImpl(TodoUseCase):
             raise HTTPException(status_code=302, detail="Can't add this todo")
 
         return todo
+
+    def execute_text_to_todo(self, voice_text: str) -> Optional[Todo]:
+        print(voice_text)
+        # TODO execute repository text_to_todo method here
+        text = self.todo_repository.text_to_todo(voice_text)
+        return text

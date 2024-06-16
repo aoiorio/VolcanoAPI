@@ -4,7 +4,10 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from ....use_case.todo.todo_use_case import TodoUseCase, TodoUseCaseImpl
-from ....infrastructure.repository.todo.todo_repository_impl import TodoRepository, TodoRepositoryImpl
+from ....infrastructure.repository.todo.todo_repository_impl import (
+    TodoRepository,
+    TodoRepositoryImpl,
+)
 from ....infrastructure.repository.auth.auth_repository_impl import (
     AuthRepository,
     AuthRepositoryImpl,
@@ -40,7 +43,21 @@ def todo_use_case(db: Session = Depends(get_db)) -> TodoUseCase:
 
 
 @router.post("/")
-async def post_todo(audio: UploadFile, token: str, todo_use_case: TodoUseCase = Depends(todo_use_case),):
+async def post_todo(
+    audio: UploadFile,
+    token: str,
+    todo_use_case: TodoUseCase = Depends(todo_use_case),
+):
     print(audio)
     todo = await todo_use_case.execute_post_todo(audio=audio, token=token)
     return todo
+
+
+@router.post("/text_to_todo/")
+async def text_to_todo(
+    voice_text: str,
+    todo_use_case: TodoUseCase = Depends(todo_use_case),
+):
+    todo = todo_use_case.execute_text_to_todo(voice_text)
+    return todo
+    # return await todo_use_case.execute_text_to_todo(voice_text)

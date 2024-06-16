@@ -5,6 +5,7 @@ from sqlalchemy.orm.session import Session
 import boto3
 import random, string
 from datetime import datetime
+from dateparser.search import search_dates
 
 
 # NOTE Project Libraries
@@ -39,6 +40,37 @@ def get_audio_url(data: bytes):
     return f"{TEBI_URL}/{TEBI_BUCKET_NAME}/{audio_name}.mp3"
 
 
+# NOTE search the values' index of title, description, period, type and priority (search where the value is)
+def gen_idx_lst(text: str):
+    split_voice_text = text.split()
+    value_lst = ['title', 'description', 'period', 'type', 'priority']
+    idx_lst = []
+
+    for i in range(len(split_voice_text)):
+        value = split_voice_text[i]
+        if value in value_lst:
+            idx = text.find(value)
+            idx_lst.append(idx)
+    idx_lst.sort()
+    return idx_lst
+
+
+# NOTE add the values to specific key of dictionary(todo_dict)
+def add_value_to_todo(text: str, todo_dict: dict):
+    try:
+        split_text = text.split()
+        value = split_text[0]
+        split_text.pop(0)
+
+        # NOTE join values that is not including the value name
+        result_value = " ".join(split_text)
+
+        # NOTE add to todo dictionary the value
+        todo_dict[value] = result_value
+    except IndexError:
+        print('index error occurred, I do not know but it will be succeeded so it will be ok')
+
+
 class TodoRepositoryImpl(TodoRepository):
     def __init__(self, db: Session):
         self.db: Session = db
@@ -67,3 +99,45 @@ class TodoRepositoryImpl(TodoRepository):
             return todo_dto.to_entity()
         except:
             raise
+
+    def text_to_todo(self, voice_text: str) -> Optional[Todo]:
+        todo = Todo()
+        todo_dict = {"title": "", "description": "", "period": datetime, "type": "", "priority": 1}
+        voice_text = voice_text.replace('.', 'period')
+        idx_lst = gen_idx_lst(voice_text)
+
+        for i in range(len(idx_lst)):
+            text = ''
+
+            # NOTE if i is the last value
+            if len(idx_lst) - 1 == i:
+                text = voice_text[idx_lst[i]:]
+                add_value_to_todo(text, todo_dict)
+                break
+
+            text = voice_text[idx_lst[i]:idx_lst[i + 1]]
+            add_value_to_todo(text, todo_dict)
+
+        # NOTE fix the dates to property one (e.g. tomorrow to 2024-xxxx-xxxx)
+        fix_period = search_dates(todo_dict["period"])
+        if fix_period is not None:
+            todo_dict["period"] = fix_period[0][1]
+        else:
+            todo_dict["period"] = datetime.now()
+
+        if todo_dict["type"] == '':
+            todo_dict["type"] = 'others'
+
+        # NOTE convert todo_dict to todo
+        todo.title = todo_dict["title"]
+        todo.description = todo_dict["description"]
+        todo.period = todo_dict["period"]
+        todo.type = todo_dict["type"]
+
+        # NOTE if priority is a string, I'll return 3
+        try:
+            todo.priority = int(todo_dict["priority"])
+        except:
+            todo.priority = 3
+
+        return todo

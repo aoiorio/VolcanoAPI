@@ -1,15 +1,13 @@
 # NOTE This file is for creating a table called todo
 
 from sqlalchemy import ForeignKey, text
-from sqlalchemy import text
+# from sqlalchemy import text
 from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 from datetime import datetime
-from....domain.entity.todo import Todo
-
-
+from ....domain.entity.todo import Todo
 # from .volcano_user_dto import VolcanoUserDTO
 from ..database import BaseModel
 
@@ -54,7 +52,7 @@ class TodoDTO(BaseModel):
         nullable=True,
     )
 
-        # NOTE This method is for combining to entity called VolcanoUser
+    # NOTE This method is for combining to entity called VolcanoUser
     def to_entity(self) -> Todo:
         return Todo(
             id=self.id,
