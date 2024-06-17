@@ -1,6 +1,5 @@
-# from ...infrastructure.repository.auth.auth_repository_impl import AuthRepositoryImpl
 from abc import abstractmethod, ABCMeta
-from .auth_model import SignUpUserModel, SignInUserModel
+from .model.auth import SignUpUserModel, SignInUserModel
 from typing import Optional
 from volcano.domain.entity.user import VolcanoUser
 # from ...infrastructure.postgresql.dto.volcano_user_dto import VolcanoUserDTO
@@ -8,7 +7,7 @@ from fastapi import HTTPException, Request
 from fastapi.responses import Response
 from jose import JWTError
 
-from ...domain.repository.auth.auth_repository import AuthRepository
+from ..domain.repository.auth import AuthRepository
 
 
 class AuthUseCase(metaclass=ABCMeta):

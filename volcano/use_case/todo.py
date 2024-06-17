@@ -3,22 +3,23 @@
 # NOTE You must name each method like executeCreateTodo, executeReadTodo
 
 from abc import abstractmethod, ABCMeta
+
 # from .todo_model import TodoPostModel
 from typing import Optional
 from volcano.domain.entity.todo import Todo
-from fastapi import HTTPException, UploadFile
+from fastapi import HTTPException, UploadFile, File
 
-from ...infrastructure.repository.todo.todo_repository_impl import TodoRepository
-from ...infrastructure.repository.auth.auth_repository_impl import AuthRepository
-
-
-# from ...domain.repository.todo.todo_repository import TodoRepository
+from ..infrastructure.repository.todo import TodoRepository
+from ..infrastructure.repository.auth import AuthRepository
+from .model.todo import TodoPostModel
 
 
 class TodoUseCase(metaclass=ABCMeta):
     @classmethod
     @abstractmethod
-    async def execute_post_todo(self, audio: UploadFile, token: str) -> Optional[Todo]:
+    async def execute_post_todo(
+        self, token: str, data: TodoPostModel, audio: UploadFile = File(...),
+    ) -> Optional[Todo]:
         ...
 
     @abstractmethod
@@ -28,11 +29,15 @@ class TodoUseCase(metaclass=ABCMeta):
 
 class TodoUseCaseImpl(TodoUseCase):
 
-    def __init__(self, todo_repository: TodoRepository, auth_repository: AuthRepository):
+    def __init__(
+        self, todo_repository: TodoRepository, auth_repository: AuthRepository
+    ):
         self.todo_repository: TodoRepository = todo_repository
         self.auth_repository: AuthRepository = auth_repository
 
-    async def execute_post_todo(self, audio: UploadFile, token: str) -> Optional[Todo]:
+    async def execute_post_todo(
+        self, data: TodoPostModel, token: str, audio: UploadFile = File(...),
+    ) -> Optional[Todo]:
         try:
             user_id = self.auth_repository.get_current_user(token).user_id
         except:
@@ -46,7 +51,15 @@ class TodoUseCaseImpl(TodoUseCase):
         if bytes_audio is None:
             raise HTTPException(status_code=302, detail="Can't load the audio")
 
-        todo = self.todo_repository.post_todo(user_id=user_id, bytes_audio=bytes_audio)
+        todo = self.todo_repository.post_todo(
+            bytes_audio=bytes_audio,
+            user_id=user_id,
+            title=data.title,
+            description=data.description,
+            type=data.type,
+            period=data.period,
+            priority=data.priority,
+        )
 
         if todo is None:
             raise HTTPException(status_code=302, detail="Can't add this todo")

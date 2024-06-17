@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 from typing import Optional
 
-from ...entity.user import VolcanoUser
+from ..entity.user import VolcanoUser
 from fastapi.responses import Response
 
 

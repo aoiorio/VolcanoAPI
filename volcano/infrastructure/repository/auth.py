@@ -7,9 +7,9 @@ from fastapi.responses import Response
 
 # from http.client import HTTPResponse
 from volcano.domain.entity.user import VolcanoUser
-from ...postgresql.dto.volcano_user_dto import VolcanoUserDTO
-from ....domain.repository.auth.auth_repository import AuthRepository
-from ....core.config import SECRET_KEY, ALGORITHM
+from ..postgresql.dto.volcano_user import VolcanoUserDTO
+from ...domain.repository.auth import AuthRepository
+from ...core.config import SECRET_KEY, ALGORITHM
 from passlib.hash import argon2
 
 

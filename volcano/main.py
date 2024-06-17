@@ -10,13 +10,18 @@ from .api.v1.routes import routes as v1_routes
 app = FastAPI(
     title=APP_NAME,
     version=VERSION,
-    # root_path="/dev/",
+    root_path="/dev/",
 )
 
 
 @app.get("/")
 async def hello():
-    return {"message": "Hi World"}
+    return {"message": "Hi World!"}
+
+
+@app.get("/test")
+async def test():
+    return {"message": "this is a test right?"}
 
 
 # NOTE This function is for creating tables

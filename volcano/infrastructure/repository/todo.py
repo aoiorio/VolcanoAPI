@@ -5,14 +5,13 @@ from sqlalchemy.orm.session import Session
 import boto3
 import random, string
 from datetime import datetime
-from dateparser.search import search_dates
-
-
+import dateparser
+import uuid
 # NOTE Project Libraries
-from ....domain.entity.todo import Todo
-from ....domain.repository.todo.todo_repository import TodoRepository
-from ...postgresql.dto.todo_dto import TodoDTO
-from ....core.config import (
+from ...domain.entity.todo import Todo
+from ...domain.repository.todo import TodoRepository
+from ..postgresql.dto.todo import TodoDTO
+from ...core.config import (
     TEBI_ACCESS_KEY_ID,
     TEBI_SECRET_ACCESS_KEY,
     TEBI_URL,
@@ -43,7 +42,7 @@ def get_audio_url(data: bytes):
 # NOTE search the values' index of title, description, period, type and priority (search where the value is)
 def gen_idx_lst(text: str):
     split_voice_text = text.split()
-    value_lst = ['title', 'description', 'period', 'type', 'priority']
+    value_lst = ["title", "description", "period", "type", "priority"]
     idx_lst = []
 
     for i in range(len(split_voice_text)):
@@ -68,29 +67,41 @@ def add_value_to_todo(text: str, todo_dict: dict):
         # NOTE add to todo dictionary the value
         todo_dict[value] = result_value
     except IndexError:
-        print('index error occurred, I do not know but it will be succeeded so it will be ok')
+        print(
+            "index error occurred, I do not know but it will be succeeded so it will be ok"
+        )
 
 
 class TodoRepositoryImpl(TodoRepository):
     def __init__(self, db: Session):
         self.db: Session = db
 
-    def post_todo(self, user_id: str, bytes_audio: bytes) -> Optional[Todo]:
+    def post_todo(
+        self,
+        user_id: uuid.UUID,
+        bytes_audio: bytes,
+        title: str,
+        description: str,
+        type: str,
+        period: datetime,
+        priority: int,
+    ) -> Optional[Todo]:
         # NOTE Convert Todo that is from user to TodoDTO
         try:
             # TODO Create function that returns Todo that are recognized from bytes_audio and define it as recognized_todo
             # TODO if there's no type in the audio I'll return type "other"
             recognized_todo = Todo(
-                title="Create Voice-Recognized feature",
-                type="Programming",
-                period=datetime.now(),
+                user_id=user_id,
+                title=title,
+                description=description,
+                period=period,
+                type=type,
+                priority=priority,
+                audio_url=get_audio_url(bytes_audio)
             )
             todo_dto = TodoDTO.from_entity(recognized_todo)
-            todo_dto.audio_url = get_audio_url(bytes_audio)
-            print(todo_dto.audio_url)
-            # NOTE I will write the code of getting user_id by using authRepository in UseCase file
+            # LINK- I will write the code of getting user_id by using authRepository in UseCase file
             # ! This file mustn't use other repository's methods, use case file will do it
-            todo_dto.user_id = user_id
 
             # NOTE store data to db
             self.db.add(todo_dto)
@@ -102,12 +113,18 @@ class TodoRepositoryImpl(TodoRepository):
 
     def text_to_todo(self, voice_text: str) -> Optional[Todo]:
         todo = Todo()
-        todo_dict = {"title": "", "description": "", "period": "", "type": "", "priority": 1}
-        voice_text = voice_text.replace('.', 'period')
+        todo_dict = {
+            "title": "",
+            "description": "",
+            "period": "",
+            "type": "",
+            "priority": 1,
+        }
+        voice_text = voice_text.replace(".", "period")
         idx_lst = gen_idx_lst(voice_text)
 
         for i in range(len(idx_lst)):
-            text = ''
+            text = ""
 
             # NOTE if i is the last value
             if len(idx_lst) - 1 == i:
@@ -121,15 +138,22 @@ class TodoRepositoryImpl(TodoRepository):
         if todo_dict["period"] == "":
             todo_dict["period"] = "tomorrow"
 
-        # NOTE fix the dates to property one (e.g. tomorrow to 2024-xxxx-xxxx)
-        fix_period = search_dates(todo_dict["period"])
-        if fix_period is not None:
-            todo_dict["period"] = fix_period[0][1]
-        else:
-            todo_dict["period"] = search_dates("tomorrow")[0][1]
+        print("todo_dict[period] pattern")
+        fix_period = dateparser.parse(todo_dict["period"])
 
-        if todo_dict["type"] == '':
-            todo_dict["type"] = 'others'
+        # NOTE fix the dates to property one (e.g. tomorrow to 2024-xxxx-xxxx)
+        # ! search_dates method takes too long
+        # fix_period = search_dates(todo_dict["period"])
+        if fix_period is not None:
+            # todo_dict["period"] = fix_period[0][1]
+            todo_dict["period"] = fix_period
+        else:
+            fix_period = dateparser.parse("tomorrow")
+            todo_dict["period"] = fix_period
+        print("add period")
+
+        if todo_dict["type"] == "":
+            todo_dict["type"] = "others"
 
         # NOTE convert todo_dict to todo
         todo.title = todo_dict["title"]

@@ -1,11 +1,12 @@
-from ....domain.repository.user.user_repository import UserRepository
-from ....domain.repository.auth.auth_repository import AuthRepository
-from ....infrastructure.repository.auth.auth_repository_impl import AuthRepositoryImpl
+from ...domain.repository.user import UserRepository
+from ...domain.repository.auth import AuthRepository
+from .auth import AuthRepositoryImpl
 
-from ....domain.entity.user import VolcanoUser
-from fastapi import Request
+from ...domain.entity.user import VolcanoUser
+# from fastapi import Request
 from typing import Optional
 from sqlalchemy.orm import Session
+
 
 class UserRepositoryImpl(UserRepository):
 

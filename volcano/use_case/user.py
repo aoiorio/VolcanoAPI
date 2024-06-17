@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod, ABCMeta
+from abc import abstractmethod, ABCMeta
 # from .. import SignUpUserModel, SignInUserModel
 from typing import Optional
 from volcano.domain.entity.user import VolcanoUser
-from fastapi import Request, HTTPException
-from ...domain.repository.user.user_repository import UserRepository
-import hashlib
+from fastapi import HTTPException
+from ..domain.repository.user import UserRepository
+
 
 class UserUseCase(metaclass=ABCMeta):
     @classmethod
@@ -22,11 +22,11 @@ class UserUseCaseImpl(UserUseCase):
     def find_user_info(self, token: str) -> Optional[VolcanoUser]:
         try:
             # token = request.cookies.get("access_token")
-            if token == None:
+            if token is None:
                 raise HTTPException(status_code=401, detail="You haven't signed in")
             volcano_user = self.user_repository.get_user_info(token)
 
-            if volcano_user == None:
+            if volcano_user is None:
                 raise HTTPException(status_code=404, detail="User not found")
             return volcano_user
         except:

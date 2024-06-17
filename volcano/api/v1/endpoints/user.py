@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from ....use_case.user.user_use_case import UserUseCase, UserUseCaseImpl
-from ....infrastructure.repository.user.user_repository_impl import UserRepository, UserRepositoryImpl
+from ....use_case.user import UserUseCase, UserUseCaseImpl
+from ....infrastructure.repository.user import UserRepository, UserRepositoryImpl
 
 
 router = APIRouter(

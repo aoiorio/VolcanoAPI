@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Optional
-from typing import TypedDict
 from datetime import datetime
 import uuid
 

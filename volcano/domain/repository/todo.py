@@ -1,15 +1,15 @@
 from abc import abstractmethod, ABCMeta
 from typing import Optional
-# from fastapi import UploadFile
-# from pydantic.dataclasses import dataclass
-from ...entity.todo import Todo
+from ..entity.todo import Todo
+from datetime import datetime
+import uuid
 
 
 class TodoRepository(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def post_todo(self, user_id: str, bytes_audio: bytes) -> Optional[Todo]:
+    def post_todo(self, user_id: uuid.UUID, bytes_audio: bytes, title: str, description: str, type: str, period: datetime, priority: int) -> Optional[Todo]:
         ...
 
     @abstractmethod

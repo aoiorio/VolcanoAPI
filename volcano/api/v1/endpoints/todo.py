@@ -1,17 +1,18 @@
-from fastapi import APIRouter, Depends, UploadFile
+from fastapi import APIRouter, Depends, UploadFile, File
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
-from ....use_case.todo.todo_use_case import TodoUseCase, TodoUseCaseImpl
-from ....infrastructure.repository.todo.todo_repository_impl import (
+from ....use_case.todo import TodoUseCase, TodoUseCaseImpl
+from ....infrastructure.repository.todo import (
     TodoRepository,
     TodoRepositoryImpl,
 )
-from ....infrastructure.repository.auth.auth_repository_impl import (
+from ....infrastructure.repository.auth import (
     AuthRepository,
     AuthRepositoryImpl,
 )
+from ....use_case.model.todo import TodoPostModel
 
 
 router = APIRouter(
@@ -44,16 +45,17 @@ def todo_use_case(db: Session = Depends(get_db)) -> TodoUseCase:
 
 @router.post("/")
 async def post_todo(
-    audio: UploadFile,
     token: str,
+    data: TodoPostModel = Depends(),
     todo_use_case: TodoUseCase = Depends(todo_use_case),
+    audio: UploadFile = File(...),
 ):
-    print(audio)
-    todo = await todo_use_case.execute_post_todo(audio=audio, token=token)
+    # print(audio)
+    todo = await todo_use_case.execute_post_todo(token=token, data=data, audio=audio)
     return todo
 
 
-@router.post("/text_to_todo/")
+@router.get("/text-to-todo/")
 async def text_to_todo(
     voice_text: str,
     todo_use_case: TodoUseCase = Depends(todo_use_case),
