@@ -5,15 +5,13 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 
-
-from ....infrastructure.postgresql.dto.volcano_user_dto import VolcanoUserDTO
-from ....infrastructure.repository.auth.auth_repository_impl import (
+from ....infrastructure.repository.auth import (
     AuthRepository,
     AuthRepositoryImpl,
 )
 
-from ....use_case.auth.auth_model import SignInUserModel, SignUpUserModel
-from ....use_case.auth.auth_use_case import AuthUseCaseImpl, AuthUseCase
+from ....use_case.model.auth import SignInUserModel, SignUpUserModel
+from ....use_case.auth import AuthUseCaseImpl, AuthUseCase
 
 router = APIRouter(
     prefix="/auth",
@@ -41,19 +39,17 @@ def auth_use_case(db: Session = Depends(get_db)) -> AuthUseCase:
     return AuthUseCaseImpl(auth_repository)
 
 
-@router.post("/sign_up_user")
+@router.post("/sign-up-user")
 async def sign_up_user(
     data: SignUpUserModel,
     response: Response,
     auth_use_case: AuthUseCase = Depends(auth_use_case),
 ):
-    # print("hello create user method")
-    # print(data)
     access_token = auth_use_case.sign_up_user(data, response)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/sign_in_user")
+@router.post("/sign-in-user")
 async def sign_in_user(
     request: Request,
     response: Response,
@@ -67,7 +63,7 @@ async def sign_in_user(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/sign_out_user", status_code=status.HTTP_204_NO_CONTENT)
+@router.get("/sign-out-user", status_code=status.HTTP_204_NO_CONTENT)
 async def sign_out_user(
     request: Request,
     response: Response,

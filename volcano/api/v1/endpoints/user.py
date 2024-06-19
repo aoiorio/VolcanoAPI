@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import Response
+from fastapi import APIRouter, Depends
+# from fastapi.responses import Response
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from starlette import status
-from ....use_case.user.user_use_case import UserUseCase, UserUseCaseImpl
-from ....infrastructure.repository.user.user_repository_impl import UserRepository, UserRepositoryImpl
+from ....use_case.user import UserUseCase, UserUseCaseImpl
+from ....infrastructure.repository.user import UserRepository, UserRepositoryImpl
+
 
 router = APIRouter(
     prefix="/user",
@@ -23,6 +23,7 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
 
 def user_use_case(db: Session = Depends(get_db)) -> UserUseCase:
     """Get a book command use case."""

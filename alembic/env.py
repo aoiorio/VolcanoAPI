@@ -1,20 +1,20 @@
+import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+# from sqlalchemy import engine_from_config
+# from sqlalchemy import pool
 
+from dotenv import load_dotenv
 from alembic import context
+from volcano.infrastructure.postgresql.database import BaseModel, engine
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-from volcano.infrastructure.postgresql.database import BaseModel, engine
-from dotenv import load_dotenv
 
 load_dotenv()
 
-import os
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 

@@ -1,5 +1,3 @@
 __pycache__
 .DS_Store
 .env
-aws_lambda_zip
-aws_lambda_final_zip

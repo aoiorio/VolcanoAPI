@@ -1,8 +1,10 @@
 from fastapi import FastAPI
+
 from mangum import Mangum
 from .core.config import APP_NAME, VERSION
 from .infrastructure.postgresql.database import create_tables
 from .api.v1.routes import routes as v1_routes
+
 # This is Volcano
 
 app = FastAPI(
@@ -14,7 +16,12 @@ app = FastAPI(
 
 @app.get("/")
 async def hello():
-    return {"message": "Hi World"}
+    return {"message": "Hi World!"}
+
+
+@app.get("/test")
+async def test():
+    return {"message": "this is a test right?"}
 
 
 # NOTE This function is for creating tables

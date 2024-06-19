@@ -9,5 +9,3 @@ routes = APIRouter()
 routes.include_router(todo_router)
 routes.include_router(auth_router)
 routes.include_router(user_router)
-
-
