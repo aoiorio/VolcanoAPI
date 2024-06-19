@@ -36,12 +36,14 @@ $ docker-compose build --no-cache
             └── __init__.py
             └── 📁endpoints
                 └── __init__.py
+                └── auth.py
                 └── todo.py
+                └── user.py
             └── routes.py
     └── 📁core
         └── __init__.py
+        └── auth_exception.py
         └── config.py
-        └── database.py
     └── 📁domain
         └── __init__.py
         └── 📁entity
@@ -49,35 +51,31 @@ $ docker-compose build --no-cache
             └── todo.py
             └── user.py
         └── 📁repository
-            └── 📁auth
-                └── __init__.py
-                └── auth_repository.py
-            └── 📁todo
-                └── __init__.py
-                └── todo_repository.py
+            └── auth.py
+            └── todo.py
+            └── user.py
     └── 📁infrastructure
         └── __init__.py
+        └── 📁postgresql
+            └── __init__.py
+            └── database.py
+            └── 📁dto
+                └── __init__.py
+                └── todo.py
+                └── volcano_user.py
         └── 📁repository
-            └── 📁auth
-                └── __init__.py
-                └── auth_repository_impl.py
-            └── 📁todo
-                └── __init__.py
-                └── todo_repository_impl.py
-    └── 📁model
-        └── __init__.py
-        └── base_model.py
-        └── todo_model.py
-        └── volcano_user_model.py
+            └── auth.py
+            └── todo.py
+            └── user.py
+    └── main.py
     └── 📁use_case
         └── __init__.py
-        └── 📁auth
-            └── __init__.py
-            └── auth_use_case.py
-        └── 📁todo
-            └── __init__.py
-            └── todo_use_case.py
-    └── main.py -- main file of Volcano
+        └── auth.py
+        └── 📁model
+            └── auth.py
+            └── todo.py
+        └── todo.py
+        └── user.py
 ```
 
 <br>
