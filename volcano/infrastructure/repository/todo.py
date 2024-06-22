@@ -122,6 +122,7 @@ class TodoRepositoryImpl(TodoRepository):
         }
         # NOTE change voice_text to lowercase letters
         voice_text = voice_text.lower()
+
         voice_text = voice_text.replace(".", " period")
         idx_lst = gen_idx_lst(voice_text)
 
