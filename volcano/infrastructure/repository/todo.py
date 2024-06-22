@@ -120,7 +120,7 @@ class TodoRepositoryImpl(TodoRepository):
             "type": "",
             "priority": 1,
         }
-        voice_text = voice_text.replace(".", "period")
+        voice_text = voice_text.replace(".", " period")
         idx_lst = gen_idx_lst(voice_text)
 
         for i in range(len(idx_lst)):
