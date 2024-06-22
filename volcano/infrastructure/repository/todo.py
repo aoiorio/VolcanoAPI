@@ -120,6 +120,9 @@ class TodoRepositoryImpl(TodoRepository):
             "type": "",
             "priority": 1,
         }
+        # NOTE change voice_text to lowercase letters
+        voice_text = voice_text.lower()
+
         voice_text = voice_text.replace(".", " period")
         idx_lst = gen_idx_lst(voice_text)
 
@@ -138,14 +141,12 @@ class TodoRepositoryImpl(TodoRepository):
         if todo_dict["period"] == "":
             todo_dict["period"] = "tomorrow"
 
-        print("todo_dict[period] pattern")
         fix_period = dateparser.parse(todo_dict["period"])
 
         # NOTE fix the dates to property one (e.g. tomorrow to 2024-xxxx-xxxx)
         # ! search_dates method takes too long
         # fix_period = search_dates(todo_dict["period"])
         if fix_period is not None:
-            # todo_dict["period"] = fix_period[0][1]
             todo_dict["period"] = fix_period
         else:
             fix_period = dateparser.parse("tomorrow")
