@@ -13,5 +13,9 @@ class TodoRepository(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def post_todo_from_text(self, user_id: uuid.UUID, title: str, description: str, type: str, period: datetime, priority: int) -> Optional[Todo]:
+        ...
+
+    @abstractmethod
     def text_to_todo(self, voice_text: str) -> Optional[Todo]:
         ...

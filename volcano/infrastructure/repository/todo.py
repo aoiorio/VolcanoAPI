@@ -169,3 +169,23 @@ class TodoRepositoryImpl(TodoRepository):
             todo.priority = 3
 
         return todo
+
+    def post_todo_from_text(self, user_id: uuid.UUID, title: str, description: str, type: str, period: datetime, priority: int) -> Optional[Todo]:
+        try:
+            recognized_todo = Todo(
+                user_id=user_id,
+                title=title,
+                description=description,
+                period=period,
+                type=type,
+                priority=priority
+            )
+            todo_dto = TodoDTO.from_entity(recognized_todo)
+
+            # NOTE store data to db
+            self.db.add(todo_dto)
+            self.db.commit()
+
+            return todo_dto.to_entity()
+        except:
+            raise
