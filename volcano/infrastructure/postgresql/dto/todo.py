@@ -37,7 +37,7 @@ class TodoDTO(BaseModel):
         nullable=False,
         primary_key=True,
     )
-    audio_url: Mapped[str] = mapped_column(nullable=False)
+    audio_url: Mapped[str] = mapped_column(nullable=True)
     is_completed: Mapped[bool] = mapped_column(
         default=False,
         server_default=text("FALSE"),

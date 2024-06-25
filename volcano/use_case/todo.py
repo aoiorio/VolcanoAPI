@@ -23,6 +23,10 @@ class TodoUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def execute_post_todo_from_text(self, token: str, data: TodoPostModel) -> Optional[Todo]:
+        ...
+
+    @abstractmethod
     def execute_text_to_todo(self, voice_text: str) -> Optional[Todo]:
         ...
 
@@ -53,6 +57,29 @@ class TodoUseCaseImpl(TodoUseCase):
 
         todo = self.todo_repository.post_todo(
             bytes_audio=bytes_audio,
+            user_id=user_id,
+            title=data.title,
+            description=data.description,
+            type=data.type,
+            period=data.period,
+            priority=data.priority,
+        )
+
+        if todo is None:
+            raise HTTPException(status_code=302, detail="Can't add this todo")
+
+        return todo
+
+    def execute_post_todo_from_text(self, token: str, data: TodoPostModel) -> Optional[Todo]:
+        try:
+            user_id = self.auth_repository.get_current_user(token).user_id
+        except:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if user_id is None:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        todo = self.todo_repository.post_todo_from_text(
             user_id=user_id,
             title=data.title,
             description=data.description,

@@ -55,6 +55,12 @@ async def post_todo(
     return todo
 
 
+@router.post("/post-todo-from-text")
+async def post_todo_from_text(token: str, data: TodoPostModel, todo_use_case: TodoUseCase = Depends(todo_use_case)):
+    todo = todo_use_case.execute_post_todo_from_text(token=token, data=data)
+    return todo
+
+
 @router.get("/text-to-todo/")
 async def text_to_todo(
     voice_text: str,
