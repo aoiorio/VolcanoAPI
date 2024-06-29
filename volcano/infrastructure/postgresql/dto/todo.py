@@ -8,10 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 import uuid
 from datetime import datetime
 from ....domain.entity.todo import Todo
-# from .volcano_user_dto import VolcanoUserDTO
 from ..database import BaseModel
-
-# from uuid import uuid4
 
 
 class TodoDTO(BaseModel):

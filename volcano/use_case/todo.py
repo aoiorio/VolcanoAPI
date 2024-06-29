@@ -30,6 +30,10 @@ class TodoUseCase(metaclass=ABCMeta):
     def execute_text_to_todo(self, voice_text: str) -> Optional[Todo]:
         ...
 
+    @abstractmethod
+    def execute_read_todo(self, token: str) -> Optional[list[Todo]]:
+        ...
+
 
 class TodoUseCaseImpl(TodoUseCase):
 
@@ -98,3 +102,14 @@ class TodoUseCaseImpl(TodoUseCase):
         # TODO execute repository text_to_todo method here
         text = self.todo_repository.text_to_todo(voice_text)
         return text
+
+    def execute_read_todo(self, token: str) -> Optional[list[Todo]]:
+        try:
+            user_id = self.auth_repository.get_current_user(token=token).user_id
+            if user_id is None:
+                raise HTTPException(status_code=404, detail="User Not Found, Please SignIn")
+            user_todo = self.todo_repository.read_todo(user_id=user_id)
+
+            return user_todo
+        except:
+            raise HTTPException(status_code=404, detail='Something went wrong')
