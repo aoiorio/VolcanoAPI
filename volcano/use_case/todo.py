@@ -12,6 +12,7 @@ from fastapi import HTTPException, UploadFile, File
 from ..infrastructure.repository.todo import TodoRepository
 from ..infrastructure.repository.auth import AuthRepository
 from .model.todo import TodoPostModel
+from jose import JWTError
 
 
 class TodoUseCase(metaclass=ABCMeta):
@@ -111,5 +112,7 @@ class TodoUseCaseImpl(TodoUseCase):
             user_todo = self.todo_repository.read_todo(user_id=user_id)
 
             return user_todo
+        except JWTError:
+            raise HTTPException(status_code=404, detail="User not found")
         except:
-            raise HTTPException(status_code=404, detail='Something went wrong')
+            raise HTTPException(status_code=404, detail="Something went wrong")

@@ -76,4 +76,4 @@ async def read_todo(
     todo_use_case: TodoUseCase = Depends(todo_use_case)
 ):
     user_todo = todo_use_case.execute_read_todo(token=token)
-    return {"user_todo": user_todo}
+    return user_todo

@@ -8,6 +8,7 @@ from datetime import datetime
 import dateparser
 import uuid
 
+
 # NOTE Project Libraries
 from ...domain.entity.todo import Todo
 from ...domain.repository.todo import TodoRepository
@@ -98,7 +99,7 @@ class TodoRepositoryImpl(TodoRepository):
                 period=period,
                 type=type,
                 priority=priority,
-                audio_url=get_audio_url(bytes_audio)
+                audio_url=get_audio_url(bytes_audio),
             )
             todo_dto = TodoDTO.from_entity(recognized_todo)
             # LINK- I will write the code of getting user_id by using authRepository in UseCase file
@@ -171,7 +172,15 @@ class TodoRepositoryImpl(TodoRepository):
 
         return todo
 
-    def post_todo_from_text(self, user_id: uuid.UUID, title: str, description: str, type: str, period: datetime, priority: int) -> Optional[Todo]:
+    def post_todo_from_text(
+        self,
+        user_id: uuid.UUID,
+        title: str,
+        description: str,
+        type: str,
+        period: datetime,
+        priority: int,
+    ) -> Optional[Todo]:
         try:
             recognized_todo = Todo(
                 user_id=user_id,
@@ -179,7 +188,7 @@ class TodoRepositoryImpl(TodoRepository):
                 description=description,
                 period=period,
                 type=type,
-                priority=priority
+                priority=priority,
             )
             todo_dto = TodoDTO.from_entity(recognized_todo)
 
@@ -193,8 +202,28 @@ class TodoRepositoryImpl(TodoRepository):
 
     def read_todo(self, user_id: uuid.UUID) -> Optional[list[Todo]]:
         try:
-            user_todo = self.db.query(TodoDTO).filter_by(user_id=user_id).all()
+            user_todo: list[TodoDTO] = (
+                self.db.query(TodoDTO).filter_by(user_id=user_id).all()
+            )
+            # NOTE distinguish the todo with type (e.g. [{"type": "programming", "values": [todo...]}, {"type": "programming", "values": [todo...]}])
+            user_todo_with_type = []
 
-            return user_todo
+            for todo in user_todo:
+                # NOTE check the dict is including todo.type key or not
+                if any(value["type"] == todo.type for value in user_todo_with_type):
+                    # NOTE index will be the index that its dict["type"] equals to todo.type in user_todo_with_type
+                    index = next(
+                        i
+                        # NOTE i is like an index such as 0, 1, 2, 3...., dict is the content of user_todo_with_type
+                        for i, dict in enumerate(user_todo_with_type)
+                        # NOTE if todo.type equals to dict["type"], return i
+                        if todo.type == dict["type"]
+                    )
+                    user_todo_with_type[index]["values"].append(todo)
+                else:
+                    # NOTE if there's no type called todo.type, I will add the dict of the type
+                    user_todo_with_type.append({"type": todo.type, "values": [todo]})
+
+            return user_todo_with_type
         except:
             raise
