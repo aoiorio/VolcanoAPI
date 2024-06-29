@@ -7,6 +7,7 @@ import random, string
 from datetime import datetime
 import dateparser
 import uuid
+
 # NOTE Project Libraries
 from ...domain.entity.todo import Todo
 from ...domain.repository.todo import TodoRepository
@@ -187,5 +188,13 @@ class TodoRepositoryImpl(TodoRepository):
             self.db.commit()
 
             return todo_dto.to_entity()
+        except:
+            raise
+
+    def read_todo(self, user_id: uuid.UUID) -> Optional[list[Todo]]:
+        try:
+            user_todo = self.db.query(TodoDTO).filter_by(user_id=user_id).all()
+
+            return user_todo
         except:
             raise

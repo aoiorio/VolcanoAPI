@@ -19,3 +19,7 @@ class TodoRepository(metaclass=ABCMeta):
     @abstractmethod
     def text_to_todo(self, voice_text: str) -> Optional[Todo]:
         ...
+
+    @abstractmethod
+    def read_todo(self, user_id: uuid.UUID) -> Optional[list[Todo]]:
+        ...

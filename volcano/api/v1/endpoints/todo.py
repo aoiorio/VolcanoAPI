@@ -68,4 +68,12 @@ async def text_to_todo(
 ):
     todo = todo_use_case.execute_text_to_todo(voice_text)
     return todo
-    # return await todo_use_case.execute_text_to_todo(voice_text)
+
+
+@router.get("/user-todo/")
+async def read_todo(
+    token: str,
+    todo_use_case: TodoUseCase = Depends(todo_use_case)
+):
+    user_todo = todo_use_case.execute_read_todo(token=token)
+    return {"user_todo": user_todo}
