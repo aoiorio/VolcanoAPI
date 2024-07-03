@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, UploadFile, File
+from volcano.domain.repository.type_color_code import TypeColorCodeRepository
+from volcano.infrastructure.repository.type_color_code import TypeColorCodeRepositoryImpl
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
 from ....use_case.todo import TodoUseCase, TodoUseCaseImpl
 from ....infrastructure.repository.todo import (
     TodoRepository,
@@ -19,8 +20,6 @@ router = APIRouter(
     prefix="/todo",
     tags=["todo"],
 )
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def get_db():
@@ -40,7 +39,8 @@ def todo_use_case(db: Session = Depends(get_db)) -> TodoUseCase:
     # NOTE ここでrepositoryをrepositoryImplにしている
     todo_repository: TodoRepository = TodoRepositoryImpl(db=db)
     auth_repository: AuthRepository = AuthRepositoryImpl(db=db)
-    return TodoUseCaseImpl(todo_repository, auth_repository)
+    type_color_code_repository: TypeColorCodeRepository = TypeColorCodeRepositoryImpl(db=db)
+    return TodoUseCaseImpl(todo_repository, auth_repository, type_color_code_repository)
 
 
 @router.post("/")
