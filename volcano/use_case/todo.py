@@ -8,6 +8,7 @@ from abc import abstractmethod, ABCMeta
 from typing import Optional
 from volcano.domain.entity.todo import Todo
 from fastapi import HTTPException, UploadFile, File
+from volcano.domain.repository.type_color_code import TypeColorCodeRepository
 
 from ..infrastructure.repository.todo import TodoRepository
 from ..infrastructure.repository.auth import AuthRepository
@@ -39,10 +40,11 @@ class TodoUseCase(metaclass=ABCMeta):
 class TodoUseCaseImpl(TodoUseCase):
 
     def __init__(
-        self, todo_repository: TodoRepository, auth_repository: AuthRepository
+        self, todo_repository: TodoRepository, auth_repository: AuthRepository, type_color_code_repository: TypeColorCodeRepository
     ):
         self.todo_repository: TodoRepository = todo_repository
         self.auth_repository: AuthRepository = auth_repository
+        self.type_color_code_repository: TypeColorCodeRepository = type_color_code_repository
 
     async def execute_post_todo(
         self, data: TodoPostModel, token: str, audio: UploadFile = File(...),
@@ -59,6 +61,11 @@ class TodoUseCaseImpl(TodoUseCase):
 
         if bytes_audio is None:
             raise HTTPException(status_code=302, detail="Can't load the audio")
+
+        is_type_exist = self.type_color_code_repository.is_type_exist(type=data.type)
+
+        if is_type_exist:
+            self.type_color_code_repository.add_type_color_object(type=data.type)
 
         todo = self.todo_repository.post_todo(
             bytes_audio=bytes_audio,
@@ -83,6 +90,12 @@ class TodoUseCaseImpl(TodoUseCase):
 
         if user_id is None:
             raise HTTPException(status_code=404, detail="User not found")
+
+        is_type_exist = self.type_color_code_repository.is_type_exist(type=data.type)
+        print(is_type_exist)
+
+        if is_type_exist:
+            self.type_color_code_repository.add_type_color_object(type=data.type)
 
         todo = self.todo_repository.post_todo_from_text(
             user_id=user_id,
