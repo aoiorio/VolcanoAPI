@@ -10,8 +10,8 @@ from ....use_case.type_color_code import TypeColorCodeUseCase, TypeColorCodeUseC
 
 
 router = APIRouter(
-    prefix="/type_color_code",
-    tags=["type_color_code"],
+    prefix="/type-color-code",
+    tags=["type-color-code"],
 )
 
 
@@ -37,7 +37,7 @@ def type_color_code_use_case(db: Session = Depends(get_db)) -> TypeColorCodeUseC
 
 
 @router.get("/")
-async def readTypeColorCode(
+async def read_type_color_code(
     type_color_code_use_case: TypeColorCodeUseCase = Depends(type_color_code_use_case),
 ):
     type_color_code_list = type_color_code_use_case.execute_read_type_color_code()
