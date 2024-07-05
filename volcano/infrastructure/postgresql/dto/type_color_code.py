@@ -24,10 +24,10 @@ class TypeColorCodeDTO(BaseModel):
         primary_key=True,
         nullable=False,
     )
-    start_color_code: Mapped[int] = mapped_column(
+    start_color_code: Mapped[str] = mapped_column(
         nullable=False,
     )
-    end_color_code: Mapped[int] = mapped_column(
+    end_color_code: Mapped[str] = mapped_column(
         nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
