@@ -9,11 +9,12 @@ from ...domain.entity.type_color_code import TypeColorCode
 from ..postgresql.dto.type_color_code import TypeColorCodeDTO
 
 
-def gen_random_color_code():
-    # Generating a random number in between 0 and 2^24
-    color = random.randrange(0, 2**24)
-    hex_color = hex(color)
-    return hex_color
+def gen_random_color_within_range(r_min, r_max, g_min, g_max, b_min, b_max):
+    # DONE create generating random color method within limitation
+    r = random.randint(r_min, r_max)
+    g = random.randint(g_min, g_max)
+    b = random.randint(b_min, b_max)
+    return "0xff" + f'{r:02x}{g:02x}{b:02x}'
 
 
 class TypeColorCodeRepositoryImpl(TypeColorCodeRepository):
@@ -22,8 +23,8 @@ class TypeColorCodeRepositoryImpl(TypeColorCodeRepository):
 
     def add_type_color_object(self, type: str) -> Optional[TypeColorCode]:
         # NOTE generate hex color codes
-        start_color_code = gen_random_color_code()
-        end_color_code = gen_random_color_code()
+        start_color_code = gen_random_color_within_range(160, 180, 160, 180, 160, 180)
+        end_color_code = gen_random_color_within_range(160, 180, 160, 180, 160, 180)
 
         type_color_object = TypeColorCode(type=type, start_color_code=start_color_code, end_color_code=end_color_code)
         type_color_code_dto = TypeColorCodeDTO.from_entity(type_color_object=type_color_object)
