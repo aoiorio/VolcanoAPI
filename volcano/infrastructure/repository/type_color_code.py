@@ -23,8 +23,8 @@ class TypeColorCodeRepositoryImpl(TypeColorCodeRepository):
 
     def add_type_color_object(self, type: str) -> Optional[TypeColorCode]:
         # NOTE generate hex color codes
-        start_color_code = gen_random_color_within_range(160, 180, 160, 180, 160, 180)
-        end_color_code = gen_random_color_within_range(160, 180, 160, 180, 160, 180)
+        start_color_code = gen_random_color_within_range(130, 180, 130, 180, 130, 180)
+        end_color_code = gen_random_color_within_range(130, 180, 130, 180, 130, 180)
 
         type_color_object = TypeColorCode(type=type, start_color_code=start_color_code, end_color_code=end_color_code)
         type_color_code_dto = TypeColorCodeDTO.from_entity(type_color_object=type_color_object)
