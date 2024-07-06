@@ -77,3 +77,12 @@ async def read_todo(
 ):
     user_todo = todo_use_case.execute_read_todo(token=token)
     return user_todo
+
+
+@router.get("/user-goals/")
+async def get_goal_percentage(
+    token: str,
+    todo_use_case: TodoUseCase = Depends(todo_use_case)
+):
+    goal_percentage = todo_use_case.execute_get_goal_percentage(token=token)
+    return goal_percentage
