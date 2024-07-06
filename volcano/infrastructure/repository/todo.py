@@ -5,8 +5,12 @@ from sqlalchemy.orm.session import Session
 import boto3
 import random, string
 from datetime import datetime
+
 import dateparser
 import uuid
+
+from volcano.domain.entity.goal_percentage import GoalPercentage
+from volcano.domain.entity.read_todo import ReadTodo
 
 
 # NOTE Project Libraries
@@ -200,7 +204,7 @@ class TodoRepositoryImpl(TodoRepository):
         except:
             raise
 
-    def read_todo(self, user_id: uuid.UUID) -> Optional[list[Todo]]:
+    def read_todo(self, user_id: uuid.UUID) -> Optional[list[ReadTodo]]:
         try:
             user_todo: list[TodoDTO] = (
                 self.db.query(TodoDTO).filter_by(user_id=user_id).all()
@@ -227,3 +231,42 @@ class TodoRepositoryImpl(TodoRepository):
             return user_todo_with_type
         except:
             raise
+
+    def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
+        today = datetime.today()
+
+        today_goal_count = 0
+        month_goal_count = 0
+        today_todo_count = 0
+        month_todo_count = 0
+
+        try:
+            todo: list[Todo] = self.db.query(TodoDTO).filter_by(user_id=user_id).all()
+        except:
+            raise
+
+        for item in todo:
+            # NOTE if the todo's period matches today and it completed, 1 adds to today_goal_percentage
+            if item.period.year == today.year and item.period.month == today.month and item.period.day == today.day:
+                today_todo_count += 1
+
+                if item.is_completed:
+                    today_goal_count += 1
+
+            if item.period.year == today.year and item.period.month == today.month:
+                month_todo_count += 1
+
+                if item.is_completed:
+                    month_goal_count += 1
+
+        goal_percentage = GoalPercentage(
+            # NOTE this can be like 43.2, 97.3, generating %
+            today_goal_percentage=round(
+                today_goal_count / today_todo_count * 100, 1
+            ),
+            month_goal_percentage=round(
+                month_goal_count / month_todo_count * 100, 1
+            ),
+        )
+
+        return goal_percentage

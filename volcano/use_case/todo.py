@@ -6,6 +6,8 @@ from abc import abstractmethod, ABCMeta
 
 # from .todo_model import TodoPostModel
 from typing import Optional
+from volcano.domain.entity.goal_percentage import GoalPercentage
+from volcano.domain.entity.read_todo import ReadTodo
 from volcano.domain.entity.todo import Todo
 from fastapi import HTTPException, UploadFile, File
 from volcano.domain.repository.type_color_code import TypeColorCodeRepository
@@ -33,7 +35,11 @@ class TodoUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def execute_read_todo(self, token: str) -> Optional[list[Todo]]:
+    def execute_read_todo(self, token: str) -> Optional[list[ReadTodo]]:
+        ...
+
+    @abstractmethod
+    def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
         ...
 
 
@@ -117,7 +123,7 @@ class TodoUseCaseImpl(TodoUseCase):
         text = self.todo_repository.text_to_todo(voice_text)
         return text
 
-    def execute_read_todo(self, token: str) -> Optional[list[Todo]]:
+    def execute_read_todo(self, token: str) -> Optional[list[ReadTodo]]:
         try:
             user_id = self.auth_repository.get_current_user(token=token).user_id
             if user_id is None:
@@ -129,3 +135,16 @@ class TodoUseCaseImpl(TodoUseCase):
             raise HTTPException(status_code=404, detail="User not found")
         except:
             raise HTTPException(status_code=404, detail="Something went wrong")
+
+    def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
+        if token is None:
+            raise HTTPException(status_code=404, detail="Token is none")
+        # user_todo: list[Todo] = self.execute_read_todo(token=token)
+        try:
+            user_id = self.auth_repository.get_current_user(token=token).user_id
+        except:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if user_id is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return self.todo_repository.get_goal_percentage(user_id=user_id)
