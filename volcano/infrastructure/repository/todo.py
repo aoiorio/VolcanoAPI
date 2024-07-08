@@ -239,6 +239,8 @@ class TodoRepositoryImpl(TodoRepository):
         month_goal_count = 0
         today_todo_count = 0
         month_todo_count = 0
+        today_goal_percentage = 0
+        month_goal_percentage = 0
 
         try:
             todo: list[Todo] = self.db.query(TodoDTO).filter_by(user_id=user_id).all()
@@ -259,14 +261,19 @@ class TodoRepositoryImpl(TodoRepository):
                 if item.is_completed:
                     month_goal_count += 1
 
+        # NOTE if there's no today's goal or month's goal, it'll be 100.0
+        if today_todo_count == 0:
+            today_goal_percentage = 100.0
+        elif month_todo_count == 0:
+            month_goal_percentage = 100.0
+        else:
+            today_goal_percentage = round(today_goal_count / today_todo_count * 100, 1)
+            month_goal_percentage = round(month_goal_count / month_todo_count * 100, 1)
+
         goal_percentage = GoalPercentage(
             # NOTE this can be like 43.2, 97.3, generating %
-            today_goal_percentage=round(
-                today_goal_count / today_todo_count * 100, 1
-            ),
-            month_goal_percentage=round(
-                month_goal_count / month_todo_count * 100, 1
-            ),
+            today_goal_percentage=today_goal_percentage,
+            month_goal_percentage=month_goal_percentage,
         )
 
         return goal_percentage
