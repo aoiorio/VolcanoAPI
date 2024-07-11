@@ -264,10 +264,12 @@ class TodoRepositoryImpl(TodoRepository):
         # NOTE if there's no today's goal or month's goal, it'll be 100.0
         if today_todo_count == 0:
             today_goal_percentage = 100.0
-        elif month_todo_count == 0:
-            month_goal_percentage = 100.0
         else:
             today_goal_percentage = round(today_goal_count / today_todo_count * 100, 1)
+
+        if month_todo_count == 0:
+            month_goal_percentage = 100.0
+        else:
             month_goal_percentage = round(month_goal_count / month_todo_count * 100, 1)
 
         goal_percentage = GoalPercentage(
