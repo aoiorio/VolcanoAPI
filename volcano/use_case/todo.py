@@ -39,6 +39,10 @@ class TodoUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def execute_update_todo(self, todo_id: str, new_todo: Todo) -> Optional[Todo]:
+        ...
+
+    @abstractmethod
     def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
         ...
 
@@ -135,6 +139,14 @@ class TodoUseCaseImpl(TodoUseCase):
             raise HTTPException(status_code=404, detail="User not found")
         except:
             raise HTTPException(status_code=404, detail="Something went wrong")
+
+    def execute_update_todo(self, todo_id: str, new_todo: Todo) -> Optional[Todo]:
+        try:
+            self.todo_repository.update_todo(todo_id=todo_id, new_todo=new_todo)
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong")
+
+        raise HTTPException(status_code=204, detail="Todo Updated")
 
     def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
         if token is None:

@@ -232,6 +232,28 @@ class TodoRepositoryImpl(TodoRepository):
         except:
             raise
 
+    def update_todo(self, todo_id: str, new_todo: Todo) -> Optional[Todo]:
+        try:
+            todo: Todo = self.db.query(TodoDTO).filter_by(todo_id=todo_id).first()
+
+            if todo is None:
+                raise
+
+            # NOTE update values
+            todo.title = new_todo.title
+            todo.description = new_todo.description
+            todo.priority = new_todo.priority
+            todo.period = new_todo.period
+            todo.audio_url = new_todo.audio_url
+            todo.type = new_todo.type
+            todo.is_completed = new_todo.is_completed
+
+            self.db.commit()
+
+            return todo
+        except:
+            raise
+
     def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
         today = datetime.today()
 

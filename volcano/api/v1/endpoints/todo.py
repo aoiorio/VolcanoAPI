@@ -13,7 +13,7 @@ from ....infrastructure.repository.auth import (
     AuthRepository,
     AuthRepositoryImpl,
 )
-from ....use_case.model.todo import TodoPostModel
+from ....use_case.model.todo import TodoPostModel, TodoUpdateModel
 
 
 router = APIRouter(
@@ -59,6 +59,16 @@ async def post_todo(
 async def post_todo_from_text(token: str, data: TodoPostModel, todo_use_case: TodoUseCase = Depends(todo_use_case)):
     todo = todo_use_case.execute_post_todo_from_text(token=token, data=data)
     return todo
+
+
+@router.put("/")
+async def update_todo(
+    todo_id: str,
+    new_todo: TodoUpdateModel,
+    todo_use_case: TodoUseCase = Depends(todo_use_case),
+):
+    updated_todo = todo_use_case.execute_update_todo(todo_id=todo_id, new_todo=new_todo)
+    return updated_todo
 
 
 @router.get("/text-to-todo/")
