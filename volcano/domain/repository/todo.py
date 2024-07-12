@@ -30,3 +30,7 @@ class TodoRepository(metaclass=ABCMeta):
     @abstractmethod
     def get_goal_percentage(self, user_id: str) -> Optional[GoalPercentage]:
         ...
+
+    @abstractmethod
+    def update_todo(self, todo_id: str, new_todo: Todo) -> Optional[Todo]:
+        ...

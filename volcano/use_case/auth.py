@@ -105,3 +105,5 @@ class AuthUseCaseImpl(AuthUseCase):
             return volcano_user
         except JWTError:
             raise HTTPException(status_code=404, detail="Not Found")
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong")
