@@ -43,6 +43,10 @@ class TodoUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
+    def execute_delete_todo(self, todo_id: str) -> Optional[Todo]:
+        ...
+
+    @abstractmethod
     def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
         ...
 
@@ -147,6 +151,14 @@ class TodoUseCaseImpl(TodoUseCase):
             raise HTTPException(status_code=404, detail="Something went wrong")
 
         raise HTTPException(status_code=204, detail="Todo Updated")
+
+    def execute_delete_todo(self, todo_id: str) -> Optional[Todo]:
+        try:
+            self.todo_repository.delete_todo(todo_id=todo_id)
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong")
+
+        raise HTTPException(status_code=204, detail="Todo Deleted")
 
     def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
         if token is None:

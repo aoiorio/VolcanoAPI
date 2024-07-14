@@ -254,6 +254,15 @@ class TodoRepositoryImpl(TodoRepository):
         except:
             raise
 
+    def delete_todo(self, todo_id: str) -> Optional[Todo]:
+        try:
+            todo = self.db.query(TodoDTO).filter_by(todo_id=todo_id).first()
+
+            self.db.delete(todo)
+            self.db.commit()
+        except:
+            raise
+
     def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
         today = datetime.today()
 

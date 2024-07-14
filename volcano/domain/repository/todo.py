@@ -34,3 +34,7 @@ class TodoRepository(metaclass=ABCMeta):
     @abstractmethod
     def update_todo(self, todo_id: str, new_todo: Todo) -> Optional[Todo]:
         ...
+
+    @abstractmethod
+    def delete_todo(self, todo_id: str) -> Optional[Todo]:
+        ...
