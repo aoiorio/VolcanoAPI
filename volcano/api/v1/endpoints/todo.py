@@ -61,14 +61,19 @@ async def post_todo_from_text(token: str, data: TodoPostModel, todo_use_case: To
     return todo
 
 
+@router.delete("/")
+async def delete_todo(todo_id: str, todo_use_case: TodoUseCase = Depends(todo_use_case)):
+    todo_use_case.execute_delete_todo(todo_id=todo_id)
+
+
 @router.put("/")
 async def update_todo(
     todo_id: str,
     new_todo: TodoUpdateModel,
     todo_use_case: TodoUseCase = Depends(todo_use_case),
 ):
-    updated_todo = todo_use_case.execute_update_todo(todo_id=todo_id, new_todo=new_todo)
-    return updated_todo
+    todo_use_case.execute_update_todo(todo_id=todo_id, new_todo=new_todo)
+    # return updated_todo
 
 
 @router.get("/text-to-todo/")
