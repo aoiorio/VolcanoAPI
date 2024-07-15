@@ -35,7 +35,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 def todo_use_case(db: Session = Depends(get_db)) -> TodoUseCase:
-    """Get a book command use case."""
     # NOTE ここでrepositoryをrepositoryImplにしている
     todo_repository: TodoRepository = TodoRepositoryImpl(db=db)
     auth_repository: AuthRepository = AuthRepositoryImpl(db=db)

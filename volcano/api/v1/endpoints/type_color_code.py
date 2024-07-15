@@ -28,7 +28,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 def type_color_code_use_case(db: Session = Depends(get_db)) -> TypeColorCodeUseCase:
-    """Get a book command use case."""
     # NOTE ここでrepositoryをrepositoryImplにしている
     type_color_code_repository: TypeColorCodeRepository = TypeColorCodeRepositoryImpl(
         db=db
