@@ -161,9 +161,6 @@ class TodoUseCaseImpl(TodoUseCase):
         raise HTTPException(status_code=204, detail="Todo Deleted")
 
     def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
-        if token is None:
-            raise HTTPException(status_code=404, detail="Token is none")
-        # user_todo: list[Todo] = self.execute_read_todo(token=token)
         try:
             user_id = self.auth_repository.get_current_user(token=token).user_id
         except:

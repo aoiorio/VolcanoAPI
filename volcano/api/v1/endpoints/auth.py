@@ -32,7 +32,6 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 def auth_use_case(db: Session = Depends(get_db)) -> AuthUseCase:
-    """Get a book command use case."""
     # NOTE ここでrepositoryをrepositoryImplにしている
     auth_repository: AuthRepository = AuthRepositoryImpl(db=db)
     # repository: AuthRepositoryImpl

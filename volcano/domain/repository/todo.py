@@ -28,7 +28,7 @@ class TodoRepository(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def get_goal_percentage(self, user_id: str) -> Optional[GoalPercentage]:
+    def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
         ...
 
     @abstractmethod
