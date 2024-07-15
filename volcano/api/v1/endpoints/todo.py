@@ -72,7 +72,6 @@ async def update_todo(
     todo_use_case: TodoUseCase = Depends(todo_use_case),
 ):
     todo_use_case.execute_update_todo(todo_id=todo_id, new_todo=new_todo)
-    # return updated_todo
 
 
 @router.get("/text-to-todo/")
