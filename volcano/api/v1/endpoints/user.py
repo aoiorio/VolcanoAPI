@@ -42,3 +42,11 @@ async def get_user_info(
 ):
     user_info = user_use_case.execute_get_user_info(token)
     return user_info
+
+
+@router.delete("/")
+async def delete_user(
+    token: str,
+    user_use_case: UserUseCase = Depends(user_use_case),
+):
+    user_use_case.execute_delete_user(token=token)

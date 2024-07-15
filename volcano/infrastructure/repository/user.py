@@ -1,5 +1,6 @@
 from volcano.domain.entity.user_info import UserInfo
 from volcano.infrastructure.postgresql.dto.todo import TodoDTO
+from volcano.infrastructure.postgresql.dto.volcano_user import VolcanoUserDTO
 from ...domain.repository.user import UserRepository
 from ...domain.entity.user import VolcanoUser
 
@@ -36,5 +37,14 @@ class UserRepositoryImpl(UserRepository):
                 done_todo_num=len(done_todo_dto),
                 not_yet_todo_num=len(not_yet_todo_dto),
             )
+        except:
+            raise
+
+    def delete_user(self, user_id: str):
+        try:
+            volcano_user_dto = self.db.query(VolcanoUserDTO).filter_by(user_id=user_id)
+            volcano_user_dto.delete()
+
+            self.db.commit()
         except:
             raise
