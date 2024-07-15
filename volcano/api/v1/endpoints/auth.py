@@ -3,7 +3,7 @@ from fastapi.responses import Response
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
-from starlette import status
+
 
 from ....infrastructure.repository.auth import (
     AuthRepository,
@@ -60,13 +60,3 @@ async def sign_in_user(
         data=data, response=response, request=request
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.get("/sign-out-user", status_code=status.HTTP_204_NO_CONTENT)
-async def sign_out_user(
-    request: Request,
-    response: Response,
-    auth_use_case: AuthUseCase = Depends(auth_use_case),
-):
-    auth_use_case.sign_out_user(response=response, request=request)
-    return {"detail": "Successfully signed out"}

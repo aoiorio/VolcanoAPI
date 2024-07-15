@@ -22,10 +22,6 @@ class AuthUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def sign_out_user(self, response: Response, request: Request) -> Optional[VolcanoUser]:
-        ...
-
-    @abstractmethod
     def get_current_user(self, request: Request) -> Optional[VolcanoUser]:
         ...
 
@@ -71,7 +67,7 @@ class AuthUseCaseImpl(AuthUseCase):
         token = request.cookies.get("access_token")
 
         if token is not None:
-            self.auth_repository.sign_out(response)
+            raise HTTPException(status_code=302, detail="You've already signed in")
 
         # NOTE user sign in feature
         access_token = self.auth_repository.sign_in(existing_user.user_id, response)
@@ -80,15 +76,6 @@ class AuthUseCaseImpl(AuthUseCase):
             raise HTTPException(status_code=404, detail="Something went wrong. Please try again")
 
         return access_token
-
-    def sign_out_user(self, response: Response, request: Request):
-
-        token = request.cookies.get("access_token")
-
-        if token is None:
-            raise HTTPException(status_code=302, detail="User not found")
-
-        self.auth_repository.sign_out(response)
 
     # FIXME - I think get_current_user in auth_user_case is redundant
     def get_current_user(self, request: Request) -> Optional[VolcanoUser]:
