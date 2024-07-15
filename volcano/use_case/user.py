@@ -14,6 +14,10 @@ class UserUseCase(metaclass=ABCMeta):
     def execute_get_user_info(self, token: str) -> Optional[UserInfo]:
         ...
 
+    @abstractmethod
+    def execute_delete_user(self, token: str):
+        ...
+
 
 class UserUseCaseImpl(UserUseCase):
 
@@ -25,7 +29,7 @@ class UserUseCaseImpl(UserUseCase):
         try:
             volcano_user = self.auth_repository.get_current_user(token=token)
         except:
-            raise HTTPException(status_code=404, detail="Something went wrong with getting user info")
+            raise HTTPException(status_code=404, detail="User not found")
 
         try:
             if volcano_user is None:
@@ -34,6 +38,17 @@ class UserUseCaseImpl(UserUseCase):
             user_info = self.user_repository.get_user_info(volcano_user=volcano_user)
 
             return user_info
-        except Exception as e:
-            print(e)
+        except:
             raise HTTPException(status_code=404, detail="Something went wrong")
+
+    def execute_delete_user(self, token: str):
+        try:
+            user_id = self.auth_repository.get_current_user(token=token).user_id
+        except:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        try:
+            self.user_repository.delete_user(user_id=user_id)
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong")
+        raise HTTPException(status_code=204, detail="User Deleted")

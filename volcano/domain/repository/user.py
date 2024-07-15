@@ -11,3 +11,7 @@ class UserRepository(metaclass=ABCMeta):
     @abstractmethod
     def get_user_info(self, volcano_user: VolcanoUser) -> Optional[UserInfo]:
         ...
+
+    @abstractmethod
+    def delete_user(self, user_id: str):
+        ...
