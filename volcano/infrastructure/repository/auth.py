@@ -106,14 +106,6 @@ class AuthRepositoryImpl(AuthRepository):
         except:
             raise
 
-    def sign_out(self, response: Response) -> Optional[VolcanoUser]:
-        # response = Response
-        try:
-            print("You will sign out!")
-            response.delete_cookie(key="access_token")
-        except:
-            raise
-
     def get_current_user(self, token: str) -> Optional[VolcanoUser]:
         # NOTE get request in an usecase file.
         try:

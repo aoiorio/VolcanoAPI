@@ -29,9 +29,5 @@ class AuthRepository(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def sign_out(self, response: Response) -> Optional[VolcanoUser]:
-        ...
-
-    @abstractmethod
     def get_current_user(self, token: str) -> Optional[VolcanoUser]:
         ...

@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
-from volcano.domain.repository.auth import AuthRepository
+from starlette import status
 from volcano.infrastructure.repository.auth import AuthRepositoryImpl
 
-# from fastapi.responses import Response
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from ....use_case.user import UserUseCase, UserUseCaseImpl
 from ....infrastructure.repository.user import UserRepository, UserRepositoryImpl
+from volcano.domain.repository.auth import AuthRepository
 
 
 router = APIRouter(
@@ -44,7 +44,7 @@ async def get_user_info(
     return user_info
 
 
-@router.delete("/")
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     token: str,
     user_use_case: UserUseCase = Depends(user_use_case),

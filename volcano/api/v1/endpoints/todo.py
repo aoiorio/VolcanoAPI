@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, UploadFile, File
+from typing import Annotated
+from sqlalchemy.orm import Session
+from starlette import status
+
 from volcano.domain.repository.type_color_code import TypeColorCodeRepository
 from volcano.infrastructure.repository.type_color_code import TypeColorCodeRepositoryImpl
 from ....infrastructure.postgresql.database import sessionLocal
-from typing import Annotated
-from sqlalchemy.orm import Session
 from ....use_case.todo import TodoUseCase, TodoUseCaseImpl
 from ....infrastructure.repository.todo import (
     TodoRepository,
@@ -60,12 +62,12 @@ async def post_todo_from_text(token: str, data: TodoPostModel, todo_use_case: To
     return todo
 
 
-@router.delete("/")
+@router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(todo_id: str, todo_use_case: TodoUseCase = Depends(todo_use_case)):
     todo_use_case.execute_delete_todo(todo_id=todo_id)
 
 
-@router.put("/")
+@router.put("/", status_code=status.HTTP_204_NO_CONTENT)
 async def update_todo(
     todo_id: str,
     new_todo: TodoUpdateModel,
