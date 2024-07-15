@@ -67,7 +67,7 @@ class AuthUseCaseImpl(AuthUseCase):
         token = request.cookies.get("access_token")
 
         if token is not None:
-            self.auth_repository.sign_out(response)
+            raise HTTPException(status_code=302, detail="You've already signed in")
 
         # NOTE user sign in feature
         access_token = self.auth_repository.sign_in(existing_user.user_id, response)
