@@ -1,6 +1,7 @@
 from volcano.domain.entity.user_info import UserInfo
 from volcano.infrastructure.postgresql.dto.todo import TodoDTO
 from volcano.infrastructure.postgresql.dto.volcano_user import VolcanoUserDTO
+from volcano.use_case.model.user import UpdateUserModel
 from ...domain.repository.user import UserRepository
 from ...domain.entity.user import VolcanoUser
 
@@ -44,6 +45,17 @@ class UserRepositoryImpl(UserRepository):
         try:
             volcano_user_dto = self.db.query(VolcanoUserDTO).filter_by(user_id=user_id)
             volcano_user_dto.delete()
+
+            self.db.commit()
+        except:
+            raise
+
+    def update_user(self, user_id: str, updated_user: UpdateUserModel):
+        try:
+            user_dto: VolcanoUser = self.db.query(VolcanoUserDTO).filter_by(user_id=user_id).first()
+            user_dto.email = updated_user.email
+            user_dto.username = updated_user.username
+            user_dto.icon = updated_user.icon
 
             self.db.commit()
         except:

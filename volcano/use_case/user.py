@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import HTTPException
 from volcano.domain.entity.user_info import UserInfo
 from volcano.domain.repository.auth import AuthRepository
+from volcano.use_case.model.user import UpdateUserModel
 # from volcano.infrastructure.repository.auth import AuthRepositoryImpl
 from ..domain.repository.user import UserRepository
 
@@ -16,6 +17,10 @@ class UserUseCase(metaclass=ABCMeta):
 
     @abstractmethod
     def execute_delete_user(self, token: str):
+        ...
+
+    @abstractmethod
+    def execute_update_user(self, token: str, data: UpdateUserModel):
         ...
 
 
@@ -52,3 +57,14 @@ class UserUseCaseImpl(UserUseCase):
         except:
             raise HTTPException(status_code=404, detail="Something went wrong")
         raise HTTPException(status_code=204, detail="User Deleted")
+
+    def execute_update_user(self, token: str, data: UpdateUserModel):
+        try:
+            user_id = self.auth_repository.get_current_user(token=token).user_id
+        except:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        try:
+            self.user_repository.update_user(user_id=user_id, updated_user=data)
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong")

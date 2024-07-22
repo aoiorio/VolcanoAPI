@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from starlette import status
 from volcano.infrastructure.repository.auth import AuthRepositoryImpl
+from volcano.use_case.model.user import UpdateUserModel
 
 from ....infrastructure.postgresql.database import sessionLocal
 from typing import Annotated
@@ -50,3 +51,8 @@ async def delete_user(
     user_use_case: UserUseCase = Depends(user_use_case),
 ):
     user_use_case.execute_delete_user(token=token)
+
+
+@router.put("/", status_code=status.HTTP_204_NO_CONTENT)
+async def update_user(token: str, updated_user: UpdateUserModel, user_use_case: UserUseCase = Depends(user_use_case)):
+    user_use_case.execute_update_user(token=token, data=updated_user)
