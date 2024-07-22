@@ -6,7 +6,7 @@ from abc import abstractmethod, ABCMeta
 
 # from .todo_model import TodoPostModel
 from typing import Optional
-from volcano.domain.entity.goal_percentage import GoalPercentage
+from volcano.domain.entity.goal_info import GoalInfo
 from volcano.domain.entity.read_todo import ReadTodo
 from volcano.domain.entity.todo import Todo
 from fastapi import HTTPException, UploadFile, File
@@ -47,7 +47,7 @@ class TodoUseCase(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
+    def execute_get_goal_info(self, token: str) -> Optional[GoalInfo]:
         ...
 
 
@@ -160,7 +160,7 @@ class TodoUseCaseImpl(TodoUseCase):
 
         raise HTTPException(status_code=204, detail="Todo Deleted")
 
-    def execute_get_goal_percentage(self, token: str) -> Optional[GoalPercentage]:
+    def execute_get_goal_info(self, token: str) -> Optional[GoalInfo]:
         try:
             user_id = self.auth_repository.get_current_user(token=token).user_id
         except:
@@ -168,4 +168,10 @@ class TodoUseCaseImpl(TodoUseCase):
 
         if user_id is None:
             raise HTTPException(status_code=404, detail="User not found")
-        return self.todo_repository.get_goal_percentage(user_id=user_id)
+
+        try:
+            goal_info = self.todo_repository.get_goal_info(user_id=user_id)
+        except:
+            raise HTTPException(status_code=404, detail="Something went wrong with getting your goal")
+
+        return goal_info
