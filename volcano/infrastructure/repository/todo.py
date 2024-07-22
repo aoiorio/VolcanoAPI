@@ -9,7 +9,7 @@ from datetime import datetime
 import dateparser
 import uuid
 
-from volcano.domain.entity.goal_percentage import GoalPercentage
+from volcano.domain.entity.goal_info import GoalInfo, MonthGoalObject, TodayGoalObject
 from volcano.domain.entity.read_todo import ReadTodo
 
 
@@ -263,7 +263,7 @@ class TodoRepositoryImpl(TodoRepository):
         except:
             raise
 
-    def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
+    def get_goal_info(self, user_id: uuid.UUID) -> Optional[GoalInfo]:
         today = datetime.today()
 
         today_goal_count = 0
@@ -278,9 +278,21 @@ class TodoRepositoryImpl(TodoRepository):
         except:
             raise
 
+        today_todo = []
+        month_todo = []
+
+        # summarize today todo and month todo
+        for item in todo:
+            if item.period.day == today.day and item.period.month == today.month:
+                today_todo.append(item)
+            if item.period.month == today.month:
+                month_todo.append(item)
+
         for item in todo:
             # NOTE if the todo's period matches today and it completed, 1 adds to today_goal_percentage
-            if item.period.year == today.year and item.period.month == today.month and item.period.day == today.day:
+            if (
+                item.period.year == today.year and item.period.month == today.month and item.period.day == today.day
+            ):
                 today_todo_count += 1
 
                 if item.is_completed:
@@ -303,10 +315,18 @@ class TodoRepositoryImpl(TodoRepository):
         else:
             month_goal_percentage = round(month_goal_count / month_todo_count * 100, 1)
 
-        goal_percentage = GoalPercentage(
-            # NOTE this can be like 43.2, 97.3, generating %
+        # NOTE get today goal object
+        today_goal_object = TodayGoalObject(
             today_goal_percentage=today_goal_percentage,
-            month_goal_percentage=month_goal_percentage,
+            today_todo=today_todo,
         )
 
-        return goal_percentage
+        # NOTE get month goal object
+        month_goal_object = MonthGoalObject(
+            month_goal_percentage=month_goal_percentage,
+            month_todo=month_todo
+        )
+
+        goal_info = GoalInfo(today_goal=today_goal_object, month_goal=month_goal_object)
+
+        return goal_info

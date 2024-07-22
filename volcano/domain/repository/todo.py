@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 from typing import Optional
 
-from volcano.domain.entity.goal_percentage import GoalPercentage
+from volcano.domain.entity.goal_info import GoalInfo
 from volcano.domain.entity.read_todo import ReadTodo
 from ..entity.todo import Todo
 from datetime import datetime
@@ -28,7 +28,7 @@ class TodoRepository(metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def get_goal_percentage(self, user_id: uuid.UUID) -> Optional[GoalPercentage]:
+    def get_goal_info(self, user_id: uuid.UUID) -> Optional[GoalInfo]:
         ...
 
     @abstractmethod
