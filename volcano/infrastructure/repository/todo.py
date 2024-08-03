@@ -48,6 +48,7 @@ def get_audio_url(data: bytes):
 # NOTE search the values' index of title, description, period, type and priority (search where the value is)
 def gen_idx_lst(text: str):
     split_voice_text = text.split()
+    # TODO add due date here and see what will happen
     value_lst = ["title", "description", "period", "type", "priority"]
     idx_lst = []
 
@@ -130,6 +131,8 @@ class TodoRepositoryImpl(TodoRepository):
         voice_text = voice_text.lower()
 
         voice_text = voice_text.replace(".", " period")
+        # NOTE replace due date to period to cover all expressions
+        voice_text = voice_text.replace("due date", " period")
         idx_lst = gen_idx_lst(voice_text)
 
         for i in range(len(idx_lst)):
@@ -143,6 +146,7 @@ class TodoRepositoryImpl(TodoRepository):
 
             text = voice_text[idx_lst[i]:idx_lst[i + 1]]
             add_value_to_todo(text, todo_dict)
+        print(todo_dict)
 
         if todo_dict["period"] == "":
             todo_dict["period"] = "tomorrow"
