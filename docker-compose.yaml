@@ -1,0 +1,10 @@
+version: '3'
+services:
+  volcano-fastapi:
+    build: .
+    volumes:
+      - .dockervenv:/src/.venv
+      - .:/src
+    ports:
+      # You must specify this port!! and if you run this app on other ports like 5000, you have to write --port 5000 to your uvicorn command
+      - 5000:5000

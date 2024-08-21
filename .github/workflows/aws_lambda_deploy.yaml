@@ -1,0 +1,69 @@
+name: 🐼 AWS Lambda Deploy
+
+on:
+  push:
+    branches:
+      # This means that contains every branch
+      - '**'
+
+jobs:
+  deploy_to_lambda:
+    name: 🌋 Deploy FastAPI endpoints to Lambda Function
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write # This is required for requesting the JWT and you can get some information from JWT
+      contents: read # This is required for actions/checkout
+
+    steps:
+      - name: 🌚 Checkout
+        uses: actions/checkout@v3
+
+      # Fetch credentials from AWS
+      - name: 🍄 Configure aws credential
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          # Specify the name of user who manupilates AWS Lambda
+          role-session-name: GitHubActions
+
+      # Get Account, UserID and Arn of AWS
+      - name: 🪼 Allow to run on role.
+        run: aws sts get-caller-identity
+
+      - name: 🍌 Setup python
+        uses: actions/setup-python@v3
+        with:
+          # Specify python version (I think it must be the same version as I set in Lambda function)
+          python-version: '3.9'
+
+      # Create zip file and upload to Lambda function called volcano
+      - name: 🧠 Upload zip file to Lambda function
+        # 1. Create .env file to add DATABASE_URL, SECRET_KEY and ALGORITHM
+        # 2. Create zip file called aws_lambda_artifact.zip that is including dependencies folders
+        # 3. Add app folder to zip file I made
+        # 4. Upload the zip file to Lambda function by using aws command.
+        # TODO Add SECRET_KEY and ALGORITHM in secrets!!!
+        run: |
+          echo "1. create .env file and add DATABASE_URL to .env"
+          touch .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "ALGORITHM=${{ secrets.ALGORITHM }}" >> .env
+          echo "TEBI_ACCESS_KEY_ID"=${{ secrets.TEBI_ACCESS_KEY_ID }} >> .env
+          echo "TEBI_SECRET_ACCESS_KEY"=${{ secrets.TEBI_SECRET_ACCESS_KEY }} >> .env
+          echo "TEBI_URL"=${{ secrets.TEBI_URL }} >> .env
+          echo "TEBI_BUCKET_NAME"=${{ secrets.TEBI_BUCKET_NAME }} >> .env
+          cat .env
+
+
+          echo "2. create zip file (remove psycopg2 and psycopg2_binary.libs folders)"
+          cd .dockervenv/lib/python3.9/site-packages
+          zip -r9 ../../../../aws_lambda_artifact.zip . && cd -
+
+          zip -g ./aws_lambda_artifact.zip -r .env
+          zip -g ./aws_lambda_artifact.zip -r volcano
+
+          echo "3. upload zip file to lambda function"
+          aws lambda update-function-code --function-name volcano --zip-file fileb://aws_lambda_artifact.zip --publish
