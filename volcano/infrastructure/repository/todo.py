@@ -45,6 +45,23 @@ def get_audio_url(data: bytes):
     return f"{TEBI_URL}/{TEBI_BUCKET_NAME}/{audio_name}.mp3"
 
 
+def delete_audio_file(file_url: str):
+    s3 = boto3.resource(
+        service_name="s3",
+        aws_access_key_id=TEBI_ACCESS_KEY_ID,
+        aws_secret_access_key=TEBI_SECRET_ACCESS_KEY,
+        endpoint_url=TEBI_URL,
+    )
+
+    # NOTE slice to get file_name from audio url (file_url)
+    file_name = file_url[34:]
+
+    if len(file_name) == 0:
+        return
+
+    s3.Object(bucket_name=TEBI_BUCKET_NAME, key=file_name).delete()
+
+
 # NOTE search the values' index of title, description, period, type and priority (search where the value is)
 def gen_idx_lst(text: str):
     split_voice_text = text.split()
@@ -95,8 +112,8 @@ class TodoRepositoryImpl(TodoRepository):
     ) -> Optional[Todo]:
         # NOTE Convert Todo that is from user to TodoDTO
         try:
-            # TODO Create function that returns Todo that are recognized from bytes_audio and define it as recognized_todo
-            # TODO if there's no type in the audio I'll return type "other"
+            # DONE Create function that returns Todo that are recognized from bytes_audio and define it as recognized_todo
+            # DONE if there's no type in the audio I'll return type "other"
             recognized_todo = Todo(
                 user_id=user_id,
                 title=title,
@@ -107,7 +124,7 @@ class TodoRepositoryImpl(TodoRepository):
                 audio_url=get_audio_url(bytes_audio),
             )
             todo_dto = TodoDTO.from_entity(recognized_todo)
-            # LINK- I will write the code of getting user_id by using authRepository in UseCase file
+            # LINK - I will write the code of getting user_id by using authRepository in UseCase file
             # ! This file mustn't use other repository's methods, use case file will do it
 
             # NOTE store data to db
@@ -260,7 +277,11 @@ class TodoRepositoryImpl(TodoRepository):
 
     def delete_todo(self, todo_id: str) -> Optional[Todo]:
         try:
-            todo = self.db.query(TodoDTO).filter_by(todo_id=todo_id).first()
+            todo: Todo = self.db.query(TodoDTO).filter_by(todo_id=todo_id).first()
+
+            # DONE delete audio file as well as todo does, I can put url of it and delete it by using module function
+            if todo.audio_url is not None:
+                delete_audio_file(todo.audio_url)
 
             self.db.delete(todo)
             self.db.commit()
@@ -327,8 +348,7 @@ class TodoRepositoryImpl(TodoRepository):
 
         # NOTE get month goal object
         month_goal_object = MonthGoalObject(
-            month_goal_percentage=month_goal_percentage,
-            month_todo=month_todo
+            month_goal_percentage=month_goal_percentage, month_todo=month_todo
         )
 
         goal_info = GoalInfo(today_goal=today_goal_object, month_goal=month_goal_object)
